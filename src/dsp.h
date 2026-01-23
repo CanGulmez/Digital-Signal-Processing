@@ -18,6 +18,10 @@
 #ifndef DSP_H
 #define DSP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Standard GNU Libraries */
 
 #define _GNU_SOURCE
@@ -347,6 +351,10 @@ extern void dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *result)
 
 /* DoA (Direction of Arrival) Methods */
 
-extern int dsp_arrival_music(const DspArrival *arrival); 
+extern int dsp_arrival_music(const DspArrival *arrival);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* DSP */
