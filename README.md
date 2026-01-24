@@ -4,7 +4,7 @@ This library is indeed to provide digital signal processing
 interface. Primarilly, this library consists of seven modules. 
 In future, of course, I'll develop new modules. For now, these 
 modules are `arrival`, `beaform`, `core`, `filter`, `signal`, 
-`transform` and `window`. 
+`transform`, `plot`. and `window`. 
 
 In `core` module, there are basic and fundamental methods. I've 
 separated these methods as time and frequency domains. Because, 
@@ -30,6 +30,10 @@ can extract little informative results from this form. So that We
 want to analyze signals in frequency domain. This transformation is 
 done using magic Fourier transform technique. All transformation 
 methods are derivatived based on this.
+
+In `plot` module, there is a plotting functionality to visualize
+the time-domain sample. It's GTK 4 and Cairo based system so that
+make sure the required libraries are being installed.
 
 In `window` module, there are window methods. Generally, these 
 windows are used in filter design or suppression noise.

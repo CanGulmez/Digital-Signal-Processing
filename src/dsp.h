@@ -73,7 +73,7 @@ extern "C" {
 typedef unsigned int DspLen; 
 typedef unsigned char DspBool;
 typedef unsigned char DspMics;
-typedef const char * DspStr;
+typedef const char* DspStr;
 
 /* User-defined Enumerations */
 
@@ -105,17 +105,20 @@ typedef enum _DspFilter
 
 /* User-defined Structures */
  
-typedef struct {
+typedef struct _DspTime
+{
    DspLen length;
    double data[MAX_DATA];
 } DspTime;
 
-typedef struct {
+typedef struct _DspFreq
+{
    DspLen length;
    double data[MAX_DATA][2];
 } DspFreq;
  
-typedef struct {
+typedef struct _DspBeamform
+{
    DspMics mics;							/* mics in phased array */
    double fs;                       /* sampling frequency in Hz */
    double radius;                   /* radius in meter */
@@ -123,7 +126,8 @@ typedef struct {
    DspTime *samples[MAX_MICS];
 } DspBeamform;
 
-typedef struct {
+typedef struct _DspArrival
+{
    DspMics mics;							/* mics in phased array */
    double radius;                   /* radius in meters */
    double freq;                     /* signal frequency in Hz */
@@ -131,7 +135,8 @@ typedef struct {
    DspTime *samples[MAX_MICS];		
 } DspArrival; 
 
-typedef struct {
+typedef struct _DspPlot
+{
 	DspStr title;							/* title of plot */
 	DspTime *sample;						/* sample to be plotted */
 	double width;							/* sample data line width */
