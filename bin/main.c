@@ -139,7 +139,7 @@ int main(int argc, char *argv[])
 	double min_val, max_val, fs, mean, stddev, snr;
 	double fsample, ssample, fc1, fc2, A, fc;
 	double theta, real, imag, Q;
-	DspLen length;
+	len_t length;
 	int shift, index, bins, factor, taps, ret;
 
 	/* Time Domain Methods  */
@@ -852,10 +852,12 @@ int main(int argc, char *argv[])
 		dsp_filter_dc_block(&tfsample, fc, fs, &tresult);
 		dt(&tresult);
 	}
-	else
-	{
-		usage_error(argv[0]);
-	}
+	// else
+	// {
+	// 	usage_error(argv[0]);
+	// }
+
+
 
 	return EXIT_SUCCESS;
 }

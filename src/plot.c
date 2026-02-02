@@ -80,7 +80,7 @@ void __plot_grid(GtkDrawingArea *area, cairo_t *cr, int width, int height)
 /**
  * Plot the x-axis label.
  */
-void __plot_label_x(GtkDrawingArea *area, cairo_t *cr, DspLen length, 
+void __plot_label_x(GtkDrawingArea *area, cairo_t *cr, len_t length, 
 						  int width, int height)
 {
 	int temp;
@@ -243,7 +243,7 @@ void __plot_drawing(GtkDrawingArea *area, cairo_t *cr, int width,
 	DspPlot *plot;
 	DspTime *sample;
 	double step, middle, value;
-	DspLen length;
+	len_t length;
 
 	/* Get the plotting features. */
 	plot = (DspPlot *)data;
@@ -323,7 +323,7 @@ void __plot_activate(GtkApplication *app, gpointer data)
 	GtkWidget *window, *headerbar;
 	DspPlot *plot;
 	GtkWidget *area;
-	DspLen width;
+	len_t width;
 	const char *title;
 	DspTime *sample;
 	GtkWidget *button;
@@ -339,7 +339,7 @@ void __plot_activate(GtkApplication *app, gpointer data)
 	factor = plot->factor;
 	title = plot->title;
 	sample = plot->sample;
-	width = (DspLen) sample->length * factor + (PLOT_MARGIN*3/2) + 8;
+	width = (len_t) sample->length * factor + (PLOT_MARGIN*3/2) + 8;
 	width = (width < PLOT_WIDTH) ? PLOT_WIDTH : width;
 
 	/* Create a new window and set common utilities. */

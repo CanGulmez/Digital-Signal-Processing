@@ -58,7 +58,7 @@ void dsp_transform_dft_real(const DspTime *sample, DspFreq *result)
 	assert_sample(sample);
 
 	dsp_transform_dft(sample, &transformed);
-	result->length = (DspLen) (transformed.length / 2 + 1);
+	result->length = (len_t) (transformed.length / 2 + 1);
 	for (i = 0; i < result->length; i++)
 	{
 		result->data[i][0] = transformed.data[i][0];

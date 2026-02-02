@@ -113,7 +113,7 @@ void dsp_time_scalar_div(const DspTime *sample, double scalar,
  * `length` is longer than `sample`'s length, fill the remaining 
  * data with 0s.
  */
-void dsp_time_resize(const DspTime *sample, DspLen length, 
+void dsp_time_resize(const DspTime *sample, len_t length, 
 							DspTime *result)
 {
 	int i;
@@ -344,7 +344,7 @@ void dsp_time_abs(const DspTime *sample, DspTime *result)
  * Generate the random data between 0.0 and 1.0 which
  * has `length` in time domain.
  */
-void dsp_time_rand(DspLen length, DspTime *result)
+void dsp_time_rand(len_t length, DspTime *result)
 {
 	int i;
 
@@ -363,7 +363,7 @@ void dsp_time_rand(DspLen length, DspTime *result)
  * Generate the random data between -1.0 and 1.0 which
  * has `length` in time domain.
  */
-void dsp_time_randn(DspLen length, DspTime *result)
+void dsp_time_randn(len_t length, DspTime *result)
 {
 	int i;
 	double u1, u2, z0, z1;
@@ -391,7 +391,7 @@ void dsp_time_randn(DspLen length, DspTime *result)
 /**
  * Return the length of `sample` sequence.
  */
-DspLen dsp_time_length(const DspTime *sample)
+len_t dsp_time_length(const DspTime *sample)
 {
 	assert_sample(sample);
 
@@ -740,7 +740,7 @@ void dsp_time_downsample(const DspTime *sample, int factor,
 	assert_sample(sample);
 	assert(factor > 1 && factor < sample->length);
 
-	result->length = (DspLen) sample->length / factor;
+	result->length = (len_t) sample->length / factor;
 	if (factor % 2 != 0)
 	{
 		result->length = (sample->length + factor - 1) / factor;
@@ -981,7 +981,7 @@ void dsp_time_cross_corr_neg(const DspTime *fsample, const DspTime *ssample,
 	assert(fsample->length == ssample->length);
 
 	dsp_time_cross_corr(fsample, ssample, &correlated);
-	result->length = (DspLen) (correlated.length / 2) + 1;
+	result->length = (len_t) (correlated.length / 2) + 1;
 	for (i = 0; i < result->length; i++)
 	{
 		result->data[i] = correlated.data[i];
@@ -1004,7 +1004,7 @@ void dsp_time_cross_corr_pos(const DspTime *fsample, const DspTime *ssample,
 	assert(fsample->length == ssample->length);
 
 	dsp_time_cross_corr(fsample, ssample, &correlated);
-	result->length = (DspLen) (correlated.length / 2) + 1;
+	result->length = (len_t) (correlated.length / 2) + 1;
 	for (i = 0; i < result->length; i++)
 	{
 		result->data[i] = correlated.data[i + (correlated.length / 2)];
@@ -1098,7 +1098,7 @@ void dsp_freq_scalar_div(const DspFreq *sample, double scalar,
  * Resize the `sample` sequence. If `sample`'s length is bigger, then fill
  * the zeros in frequency domain.
  */
-void dsp_freq_resize(const DspFreq *sample, DspLen length, DspFreq *result)
+void dsp_freq_resize(const DspFreq *sample, len_t length, DspFreq *result)
 {
 	int i, j;
 
@@ -1209,7 +1209,7 @@ void dsp_freq_concat(const DspFreq *fsample, const DspFreq *ssample,
 /**
  * Return the length of `sample` sequence.
  */
-DspLen dsp_freq_length(const DspFreq *sample)
+len_t dsp_freq_length(const DspFreq *sample)
 {
 	return sample->length;
 }

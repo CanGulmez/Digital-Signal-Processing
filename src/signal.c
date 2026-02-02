@@ -21,7 +21,7 @@
  * Generate a normal (Gaussian) noise sequence which has `mean` and `stddev`
  * in time domain.
  */
-void dsp_signal_normal(double mean, double stddev, DspLen length, DspTime *result)
+void dsp_signal_normal(double mean, double stddev, len_t length, DspTime *result)
 {
 	int i;
 	double u1, u2, s, z0, z1;
@@ -75,7 +75,7 @@ void dsp_signal_awgn(const DspTime *sample, double snr, DspTime *result)
  * amplitude `A`, frequency `fc` and phase angle `theta` (in degrees) in
  * time domain.
  */
-void dsp_signal_sin(double A, double fc, double fs, double theta, DspLen length, 
+void dsp_signal_sin(double A, double fc, double fs, double theta, len_t length, 
 						  DspTime *result)
 {
 	int i;
@@ -96,7 +96,7 @@ void dsp_signal_sin(double A, double fc, double fs, double theta, DspLen length,
  * amplitude `A`, frequency `fc` and phase angle `theta` (in degrees) in
  * time domain.
  */
-void dsp_signal_sinc(double A, double fc, double fs, double theta, DspLen length,
+void dsp_signal_sinc(double A, double fc, double fs, double theta, len_t length,
 							DspTime *result)
 {
 	int i;
@@ -125,7 +125,7 @@ void dsp_signal_sinc(double A, double fc, double fs, double theta, DspLen length
  * amplitude `A`, frequency `fc` and phase angle `theta` (in degrees) in
  * time domain.
  */
-void dsp_signal_cos(double A, double fc, double fs, double theta, DspLen length, 
+void dsp_signal_cos(double A, double fc, double fs, double theta, len_t length, 
 						  DspTime *result)
 {
 	int i;
@@ -145,7 +145,7 @@ void dsp_signal_cos(double A, double fc, double fs, double theta, DspLen length,
  * Generate a impulse sequence where `index`.th is one and others 
  * are zeros in time domain.
  */
-void dsp_signal_impulse(int index, DspLen length, DspTime *result)
+void dsp_signal_impulse(int index, len_t length, DspTime *result)
 {
 	int i;
 
@@ -171,7 +171,7 @@ void dsp_signal_impulse(int index, DspLen length, DspTime *result)
  * Generate a step sequence where between of `findex` and `sindex`
  * are ones, others are `A` in time domain.
  */
-void dsp_signal_step(double A, int findex, int sindex, DspLen length, 
+void dsp_signal_step(double A, int findex, int sindex, len_t length, 
 							DspTime *result)
 {
 	int i;
@@ -198,7 +198,7 @@ void dsp_signal_step(double A, int findex, int sindex, DspLen length,
  * Generate a square wave sequence sampled at `fs` which have
  * amplitude `A`, and frequency `fc` in time domain.
  */
-void dsp_signal_square(double A, double fc, double fs, DspLen length, 
+void dsp_signal_square(double A, double fc, double fs, len_t length, 
 							  DspTime *result)
 {
 	int i;
@@ -227,7 +227,7 @@ void dsp_signal_square(double A, double fc, double fs, DspLen length,
  * Generate a sawtooth sequence sampled at `fs` which have amplitude
  * `A` and frequency `fc` in time domain.
  */
-void dsp_signal_sawtooth(double A, double fc, double fs, DspLen length, 
+void dsp_signal_sawtooth(double A, double fc, double fs, len_t length, 
 								 DspTime *result)
 {
 	int i;
@@ -247,7 +247,7 @@ void dsp_signal_sawtooth(double A, double fc, double fs, DspLen length,
  * Generate a triangle sequence sampled at `fs` which have amplitude
  * `A` and frequency `fc` in time domain.
  */
-void dsp_signal_triangle(double A, double fc, double fs, DspLen length,
+void dsp_signal_triangle(double A, double fc, double fs, len_t length,
 								 DspTime *result)
 {
 	int i;
