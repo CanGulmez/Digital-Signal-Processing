@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
  * @file 	filter.c
- * @author 	Ahmet Can GULMEZ
+ * @author 	Can GULMEZ
  * @brief 	FIR and IIR-based filter operations of DSP.
  * 
  ******************************************************************************
  * @attention
  * 
- * Copyright (c) 2026 Ahmet Can GULMEZ.
+ * Copyright (c) 2026 Can GULMEZ.
  * All rights reserved.
  * 
  * This software is licensed under the MIT License.
@@ -117,8 +117,8 @@ void dsp_filter_fir_high_pass(const DspTime *sample, double fc, double fs,
 /**
  * Apply the FIR band-pass filter to `sample` sequence in time domain.
  */
-void dsp_filter_fir_band_pass(const DspTime *sample, double fc1, double fc2, double fs, 
-								  	   int taps, DspTime *result)
+void dsp_filter_fir_band_pass(const DspTime *sample, double fc1, double fc2, 
+										double fs, int taps, DspTime *result)
 {
 	DspTime low1, low2;
 
@@ -130,8 +130,8 @@ void dsp_filter_fir_band_pass(const DspTime *sample, double fc1, double fc2, dou
 /**
  * Apply the FIR band-stop filter to `sample` sequence in time domain.
  */   
-void dsp_filter_fir_band_stop(const DspTime *sample, double fc1, double fc2, double fs, 
-									   int taps, DspTime *result)
+void dsp_filter_fir_band_stop(const DspTime *sample, double fc1, double fc2, 
+										double fs, int taps, DspTime *result)
 {
 	int i;
 	DspTime passed, impulse;
@@ -147,10 +147,11 @@ void dsp_filter_fir_band_stop(const DspTime *sample, double fc1, double fc2, dou
 }
 
 /**
- * Apply IIR 2nd-order Butterworth I filter to `sample` sequence in time domain.
+ * Apply IIR 2nd-order Butterworth I filter to `sample` sequence in 
+ * time domain.
  */
-void dsp_filter_iir(const DspTime *sample, DspFilter filter, double fc, double fs, 
-						  double Q, DspTime *result)
+void dsp_filter_iir(const DspTime *sample, DspFilter filter, double fc, 
+						  double fs, double Q, DspTime *result)
 {
 	int i;
 	double w0, alpha, a0;

@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
  * @file 	beamform.c
- * @author 	Ahmet Can GULMEZ
+ * @author 	Can GULMEZ
  * @brief 	Beamforming operations of DSP.
  * 
  ******************************************************************************
  * @attention
  * 
- * Copyright (c) 2026 Ahmet Can GULMEZ.
+ * Copyright (c) 2026 Can GULMEZ.
  * All rights reserved.
  * 
  * This software is licensed under the MIT License.
@@ -35,7 +35,7 @@ void dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *result)
 	{
 		angle = 2.0 * M_PI * i / beamform->mics;
 		delays[i] = beamform->radius * cos(angle - RAD(beamform->theta)) / 
-			SOUND_SPEED * beamform->fs;
+			SOUND_SPEED * beamform->freq;
 		if (delays[i] > maxdelay)
 		{
 			maxdelay = delays[i];
