@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
  * @file 	main.c
- * @author 	Ahmet Can GULMEZ
+ * @author 	Can GULMEZ
  * @brief 	Coomand Line Interface of DSP.
  * 
  ******************************************************************************
  * @attention
  * 
- * Copyright (c) 2026 Ahmet Can GULMEZ.
+ * Copyright (c) 2026 Can GULMEZ.
  * All rights reserved.
  * 
  * This software is licensed under the MIT License.
@@ -852,12 +852,10 @@ int main(int argc, char *argv[])
 		dsp_filter_dc_block(&tfsample, fc, fs, &tresult);
 		dt(&tresult);
 	}
-	// else
-	// {
-	// 	usage_error(argv[0]);
-	// }
-
-
+	else
+	{
+		usage_error(argv[0]);
+	}
 
 	return EXIT_SUCCESS;
 }
