@@ -35,7 +35,7 @@ void dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *result)
 	{
 		angle = 2.0 * M_PI * i / beamform->mics;
 		delays[i] = beamform->radius * cos(angle - RAD(beamform->theta)) / 
-			SOUND_SPEED * beamform->freq;
+			SOUND_SPEED * beamform->fs;
 		if (delays[i] > maxdelay)
 		{
 			maxdelay = delays[i];

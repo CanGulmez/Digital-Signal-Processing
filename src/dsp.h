@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file 	dsp.c
+ * @file 	dsp.h
  * @author 	Can GULMEZ
  * @brief 	Main header of Digital Signal Processing.
  * 
@@ -119,7 +119,7 @@ typedef struct _DspFreq
 typedef struct _DspBeamform
 {
    mics_t mics;							/* mics in phased array */
-   double freq;                     /* signal frequency in Hz */
+   double fs;                     	/* sampling frequency in Hz */
    double radius;                   /* radius in meter */
    double theta;                    /* arrival angle in degrees */
    DspTime *samples[MAX_MICS];
