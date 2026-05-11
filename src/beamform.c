@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
  * @file 	beamform.c
- * @author 	Can GULMEZ
+ * @author 	Can Gulmez
  * @brief 	Beamforming operations of DSP.
  * 
  ******************************************************************************
  * @attention
  * 
- * Copyright (c) 2026 Can GULMEZ.
+ * Copyright (c) 2026 Can Gulmez.
  * All rights reserved.
  * 
  * This software is licensed under the MIT License.
@@ -15,65 +15,64 @@
  ******************************************************************************
  */
 
-#include "./dsp.h"
+#include "dsp.h"
+
 
 /**
  * Apply delay and sum beamforming for uniform circular phased array 
  * microphone system and return the enhanced sample.
  */
-void dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *result)
+DspStatus dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *res)
 {
 	int i, j;
-	double angle, delays[beamform->mics], maxdelay = 0.0;
-	DspTime aligned[MAX_MICS];
-	
-	/* Validate the inputs. */
-	assert_beamform(beamform);
+	mic_t mics = beamform->mics;
+	double radius = beamform->radius;
+	double fs = beamform->fs;
+	double theta = beamform->theta;
+	double angle;
+	double delays[mics];
+	double maxdelay = 0.0;
+	DspTime aligned[mics];
+
+	/* Validate the input parameters. */
+	for (i = 0; i < mics; i++)
+	{
+		if (IS_BAD_SAMPLE(beamform->samples[i]))
+			return DSP_ERR_BAD_SAMPLE;
+	}
+	if (mics > MAX_MICS || fs <= 1.0 || radius <= 0.0)
+		return DSP_ERR_FALSE_COND;
 
 	/* Calculate the delays between uniform microphones. */
-	for (i = 0; i < beamform->mics; i++)
+	for (i = 0; i < mics; i++)
 	{
-		angle = 2.0 * M_PI * i / beamform->mics;
-		delays[i] = beamform->radius * cos(angle - RAD(beamform->theta)) / 
-			SOUND_SPEED * beamform->fs;
+		angle = 2.0 * M_PI * i / mics;
+		delays[i] = radius * cos(angle - RAD(theta)) / SOUND_SPEED * fs;
 		if (delays[i] > maxdelay)
 		{
 			maxdelay = delays[i];
 		}
 	}
-
 	/* Make all delays positive (causal system). */
 	for (i = 0; i < beamform->mics; i++)
 	{
 		delays[i] = maxdelay - delays[i];
 	}
-
 	/* Align the beamform according to delays. */
-	for (i = 0; i < beamform->mics; i++)
+	for (i = 0; i < mics; i++)
 	{
 		aligned[i].length = beamform->samples[i]->length;
-		dsp_time_delay_lagrange(beamform->samples[i], delays[i],
-			&aligned[i]);
+		dsp_time_delay_lagrange(beamform->samples[i], delays[i], &aligned[i]);
 	}
-
 	/* Enhance the all samples into one sample. */
-	result->length = aligned[0].length;
-	memset(result->data, 0, result->length * sizeof(double));
-	for (i = 0; i < beamform->mics; i++)
+	res->length = aligned[0].length;
+	memset(res->data, 0, res->length * sizeof(double));
+	for (i = 0; i < mics; i++)
 	{
-		for (j = 0; j < result->length; j++)
+		for (j = 0; j < res->length; j++)
 		{
-			result->data[j] += aligned[i].data[j];
+			res->data[j] += aligned[i].data[j];
 		}
 	}
-}
-
-/**
- * Apply the minimum variance distortionless response (MVDR) beamforming 
- * technique to `beamform`. `tetha` (degrees) refers to the arrival angle 
- * toward the phased array plane. 
- */
-void dsp_beamform_mvdr(const DspBeamform *beamform, double tetha, DspTime *result)
-{
-
+	return DSP_SUCCESS;
 }

@@ -39,23 +39,24 @@ extern "C" {
 
 /* GNU scientific library */
 
-// #include <gsl/gsl_matrix.h>
-// #include <gsl/gsl_blas.h>
-// #include <gsl/gsl_linalg.h>
-// #include <gsl/gsl_eigen.h>
-// #include <gsl/gsl_vector.h>
-// #include <gsl/gsl_complex.h>
-// #include <gsl/gsl_complex_math.h>
+#include <gsl/gsl_matrix.h>
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_eigen.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_complex.h>
+#include <gsl/gsl_complex_math.h>
 
 /* GUI and plot libraries */
 
-// #include <gtk/gtk.h>
-// #include <cairo/cairo.h>
+#include <gtk/gtk.h>
+#include <cairo/cairo.h>
  
-/* User-defined Constants */
+/* User-defined constants */
 
 #define DATA_SIZE					1024
-#define MAX_MICS           	24 
+
+#define MAX_MICS					24 
 #define MAX_SOURCES        	8       
 #define SOUND_SPEED        	343.0    // m/s
 
@@ -65,23 +66,35 @@ extern "C" {
 #define PLOT_ID					"com.example.dsp"
 #define PLOT_MARGIN				40		/* pixel */
 #define PLOT_GRID					20		/* pixel */
-#define PLOT_WIDTH				800	/* pixel */
-#define PLOT_HEIGHT				600	/* pixel */
 
 /*****************************************************************************/
 /*****************************************************************************/
 
-/* User-defined Data Types */
+/* User-defined data types */
  
 typedef unsigned int len_t;
 typedef int index_t;
-typedef unsigned char mics_t;
+typedef unsigned char mic_t;
+typedef unsigned char src_t;
 typedef const char *str_t;
 
 /*****************************************************************************/
 /*****************************************************************************/
 
-/* User-defined Enumerations */
+/* User-defined enumerations */
+
+typedef enum _DspStatus
+{
+	DSP_SUCCESS = 0,			/* success */
+	DSP_ERR_NULL_PTR,			/* invalid pointer  */
+	DSP_ERR_BAD_LEN,			/* invalid length */
+	DSP_ERR_BAD_SAMPLE,		/* invalid pointer || invalid length */
+	DSP_ERR_MISMATCH,			/* sample length mismatch */
+	DSP_ERR_BAD_INDEX,		/* invalid index */
+	DSP_ERR_BAD_FIR_FILTER,	/* invalid fir filter type */
+	DSP_ERR_BAD_IIR_FILTER,	/* invalid iir filter type */
+	DSP_ERR_FALSE_COND		/* false condition statement */
+} DspStatus;
 
 typedef enum _DspColor
 {
@@ -100,17 +113,6 @@ typedef enum _DspColor
 	DSP_COLOR_GOLD
 } DspColor;
 
-typedef enum _DspStatus
-{
-	DSP_SUCCESS = 0,			/* success */
-	DSP_ERR_NULL_PTR,			/* invalid pointer  */
-	DSP_ERR_BAD_LEN,			/* invalid length */
-	DSP_ERR_BAD_SAMPLE,		/* invalid pointer || invalid length */
-	DSP_ERR_MISMATCH,			/* sample length mismatch */
-	DSP_ERR_BAD_INDEX,		/* invalid index */
-	DSP_ERR_FALSE_COND		/* false condition statement */
-} DspStatus;
-
 typedef enum _DspFirFilter
 {
 	DSP_FIR_FILTER_LOW_PASS,
@@ -128,7 +130,7 @@ typedef enum _DspIirFilter
 /*****************************************************************************/
 /*****************************************************************************/
 
-/* User-defined Structures */
+/* User-defined structures */
 
 typedef struct _DspTime
 {
@@ -144,16 +146,16 @@ typedef struct _DspFreq
 
 typedef struct _DspArrival
 {
-   mics_t mics;							/* mics in phased array */
+   mic_t mics;								/* mics in phased array */
    double radius;                   /* radius in meters */
    double freq;                     /* signal frequency in Hz */
-   uint8_t sources;						/* sound sources */
+   src_t sources;							/* sound sources */
    DspTime *samples[MAX_MICS];		
 } DspArrival;
 
 typedef struct _DspBeamform
 {
-   mics_t mics;							/* mics in phased array */
+   mic_t mics;								/* mics in phased array */
    double fs;                     	/* sampling frequency in Hz */
    double radius;                   /* radius in meter */
    double theta;                    /* arrival angle in degrees */
@@ -177,10 +179,18 @@ typedef struct _DspPlot
 #define IS_MISMATCH(fsample, ssample) (fsample->length != ssample->length)
 #define IS_BAD_INDEX(sample, index) (index < 0 || index > sample->length)
 
+#define IS_BAD_FIR_FILTER(filter) (filter != DSP_FIR_FILTER_LOW_PASS && \
+											  filter != DSP_FIR_FILTER_HIGH_PASS)
+#define IS_BAD_IIR_FILTER(filter) (filter != DSP_IIR_FILTER_LOW_PASS &&  \
+											  filter != DSP_IIR_FILTER_HIGH_PASS && \
+											  filter != DSP_IIR_FILTER_BAND_PASS && \
+											  filter != DSP_IIR_FILTER_BAND_STOP)
+
+
 /*****************************************************************************/
 /*****************************************************************************/
 
-/* Time Domain Signal Processing Methods  */
+/* Time-domain signal processing methods  */
 
 DspStatus dsp_time_add(const DspTime *fsample, const DspTime *ssample, DspTime *res);
 DspStatus dsp_time_sub(const DspTime *fsample, const DspTime *ssample, DspTime *res);
@@ -217,6 +227,8 @@ double dsp_time_kurtosis(const DspTime *sample);
 double dsp_time_variance(const DspTime *sample);
 double dsp_time_snr(const DspTime *sample, const DspTime *noise);
 double dsp_time_entropy(const DspTime *sample, int bins);
+double dsp_time_sum(const DspTime *sample);
+double dsp_time_product(const DspTime *sample);
 DspStatus dsp_time_scale(const DspTime *sample, double scale, DspTime *res);
 DspStatus dsp_time_downsample(const DspTime *sample, int factor, DspTime *res);
 DspStatus dsp_time_upsample(const DspTime *sample, int factor, DspTime *res);
@@ -230,7 +242,7 @@ DspStatus dsp_time_cross_corr(const DspTime *fsample, const DspTime *ssample, Ds
 DspStatus dsp_time_cross_corr_neg(const DspTime *fsample, const DspTime *ssample, DspTime *res);
 DspStatus dsp_time_cross_corr_pos(const DspTime *fsample, const DspTime *ssample, DspTime *res); 
 
-/* Frequency Domain Signal Processing Methods */
+/* frequency-domain signal processing methods */
 
 DspStatus dsp_freq_add(const DspFreq *fsample, const DspFreq *ssample, DspFreq *res);
 DspStatus dsp_freq_sub(const DspFreq *fsample, const DspFreq *ssample, DspFreq *res);
@@ -254,16 +266,16 @@ double dsp_freq_spectral_flatness(const DspFreq *sample);
 double dsp_freq_spectral_rolloff(const DspFreq *sample, double threshold, double fs);
 double dsp_freq_thd(const DspFreq *sample, double fs);
 
-/* Plotting Methods */
+/* Plotting methods */
 
-void dsp_plot_sample(const DspPlot *plot);
+int dsp_plot_sample(const DspPlot *plot);
 
-/* Signal Generation Methods */
+/* Signal generation methods */
 
 DspStatus dsp_signal_normal(double mean, double stddev, len_t length, DspTime *res);
 DspStatus dsp_signal_awgn(const DspTime *sample, double snr, DspTime *res);
 DspStatus dsp_signal_sin(double a, double fc, double fs, double theta, len_t length, DspTime *res);
-DspStatus dsp_signal_sinc(double a, double fc, double fs, double theta, len_t length, DspTime *res);
+DspStatus dsp_signal_sinc(double a, double fc, double fs, len_t length, DspTime *res);
 DspStatus dsp_signal_cos(double a, double fc, double fs, double theta, len_t length, DspTime *res);
 DspStatus dsp_signal_impulse(double a, index_t index, len_t length, DspTime *res);
 DspStatus dsp_signal_step(double a, int fsample, int ssample, len_t length, DspTime *res);
@@ -271,7 +283,7 @@ DspStatus dsp_signal_square(double a, double fc, double fs, len_t length, DspTim
 DspStatus dsp_signal_sawtooth(double a, double fc, double fs, len_t length, DspTime *res);
 DspStatus dsp_signal_triangle(double a, double fc, double fs, len_t length, DspTime *res);
 
-/* Windowing Methods */
+/* Windowing methods */
 
 DspStatus dsp_window_hamming(const DspTime *sample, DspTime *res);
 DspStatus dsp_window_hanning(const DspTime *sample, DspTime *res);
@@ -279,7 +291,7 @@ DspStatus dsp_window_blackman(const DspTime *sample, DspTime *res);
 DspStatus dsp_window_chebyshev(const DspTime *sample, int factor, DspTime *res);
 DspStatus dsp_window_kaiser(const DspTime *sample, int factor, DspTime *res);
 
-/* Time-Frequency Transformation Methods */
+/* Time-frequency transformation methods */
 
 DspStatus dsp_transform_dft(const DspTime *sample, DspFreq *res);
 DspStatus dsp_transform_dft_real(const DspTime *sample, DspFreq *res);
@@ -290,9 +302,9 @@ DspStatus dsp_transform_idft(const DspFreq *sample, DspTime *res);
 // DspStatus dsp_transform_idct(const DspTime *sample, DspTime *res);
 // DspStatus dsp_transform_hilbert(const DspTime *sample, DspTime *res);
 
-/* FIR-based Filter Methods */
+/* FIR- and IIR-based filter methods */
 
-DspStatus dsp_filter_fir(const DspTime *sample, DspFirFilter filter, double fc, double fs, DspTime *res);
+DspStatus dsp_filter_fir(const DspTime *sample, DspFirFilter filter, double fc, double fs, int taps, DspTime *res);
 DspStatus dsp_filter_fir_low_pass(const DspTime *sample, double fc, double fs, int taps, DspTime *res);
 DspStatus dsp_filter_fir_high_pass(const DspTime *sample, double fc, double fs, int taps, DspTime *res);
 DspStatus dsp_filter_fir_band_pass(const DspTime *sample, double fc1, double fc2, double fs, int taps, DspTime *res);
@@ -302,16 +314,14 @@ DspStatus dsp_filter_iir_low_pass(const DspTime *sample, double fc, double fs, D
 DspStatus dsp_filter_iir_high_pass(const DspTime *sample, double fc, double fs, DspTime *res);
 DspStatus dsp_filter_iir_band_pass(const DspTime *sample, double fc, double fs, double Q, DspTime *res);
 DspStatus dsp_filter_iir_band_stop(const DspTime *sample, double fc, double fs, double Q, DspTime *res);
-DspStatus dsp_filter_dc_block(const DspTime *sample, double fc, double fs, DspTime *res);
 
-/* Beamforming Methods */
+/* Beamforming methods */
 
-DspStatus dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *res); 
-// DspStatus dsp_beamform_mvdr(const dsp_beamform_t *beamform, double tetha, DspTime *res);
+DspStatus dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *res);
 
-/* DoA (Direction of Arrival) Methods */
+/* DoA (Direction of Arrival) methods */
 
-int dsp_arrival_music(const DspArrival *arrival);
+DspStatus dsp_arrival_music(const DspArrival *arrival, int *res);
 
 #ifdef __cplusplus
 }

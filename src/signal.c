@@ -108,7 +108,7 @@ DspStatus dsp_signal_sin(double a, double fc, double fs, double theta, len_t len
  * Create a sinc wave sampled at `fs` frequency  which have amplitude `a`, 
  * frequency `fc` and phase angle `theta` (in degrees) in time domain.
  */
-DspStatus dsp_signal_sinc(double a, double fc, double fs, double theta, len_t length,
+DspStatus dsp_signal_sinc(double a, double fc, double fs, len_t length,
 									DspTime *res)
 {
 	int i;
@@ -129,8 +129,8 @@ DspStatus dsp_signal_sinc(double a, double fc, double fs, double theta, len_t le
 		}
 		else
 		{
-			res->data[i] = a * sin(2 * M_PI * fc * (i / fs) + RAD(theta)) /
-				(2 * M_PI * fc * (i / fs) + RAD(theta));
+			res->data[i] = a * sin(2 * M_PI * fc * (i / fs)) /
+				(2 * M_PI * fc * (i / fs));
 		}
 	}
 	return DSP_SUCCESS;

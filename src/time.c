@@ -477,8 +477,12 @@ double dsp_time_min(const DspTime *sample)
 double dsp_time_abs_max(const DspTime *sample)
 {
 	DspTime res;
+	DspStatus status;
 	
-	dsp_time_abs(sample, &res);
+	status = dsp_time_abs(sample, &res);
+	if (status != DSP_SUCCESS)
+		return 0.0;
+
 	return dsp_time_max(&res);
 }
 
@@ -488,8 +492,12 @@ double dsp_time_abs_max(const DspTime *sample)
 double dsp_time_abs_min(const DspTime *sample)
 {
 	DspTime res;
+	DspStatus status;
 	
-	dsp_time_abs(sample, &res);
+	status = dsp_time_abs(sample, &res);
+	if (status != DSP_SUCCESS)
+		return 0.0;
+
 	return dsp_time_min(&res);	
 }
 
@@ -681,6 +689,36 @@ double dsp_time_snr(const DspTime *sample, const DspTime *noise)
 
 // 	return entropy;
 // }
+
+/**
+ * Sum up the all elements of `sample`.
+ */
+double dsp_time_sum(const DspTime *sample)
+{
+	int i;
+	double sum = 0.0;
+
+	for (i = 0; i < sample->length; i++)
+	{
+		sum += sample->data[i];
+	}
+	return sum;
+}
+
+/**
+ * Product the all elements of `sample`.
+ */
+double dsp_time_product(const DspTime *sample)
+{
+	int i;
+	double product = 1.0;
+
+	for (i = 0; i < sample->length; i++)
+	{
+		product *= sample->data[i];
+	}
+	return product;
+}
 
 /**
  * Scale the `sample` between `[-scale, scale]` in time domain.
