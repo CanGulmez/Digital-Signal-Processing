@@ -88,7 +88,7 @@ void __plot_label_x(cairo_t *cr, DspPlot *plot, int width, int height)
 
 void __plot_label_y(cairo_t *cr, int width, int height)
 {
-	char buffer[35];
+	char buffer[64];
 	int temp;
 
 	/* Put the y-axis label. */
