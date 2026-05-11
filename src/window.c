@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
  * @file 	window.c
- * @author 	Can GULMEZ
+ * @author 	Can Gulmez
  * @brief 	Windowing operations of DSP.
  * 
  ******************************************************************************
  * @attention
  * 
- * Copyright (c) 2026 Can GULMEZ.
+ * Copyright (c) 2026 Can Gulmez.
  * All rights reserved.
  * 
  * This software is licensed under the MIT License.
@@ -15,97 +15,107 @@
  ******************************************************************************
  */
 
-#include "./dsp.h"
+#include "dsp.h"
+
 
 /**
- * Apply the Hamming window to `sample` sequence in time domain.
+ * Apply the Hamming window to `sample` in time domain.
  */
-void dsp_window_hamming(const DspTime *sample, DspTime *result)
+DspStatus dsp_window_hamming(const DspTime *sample, DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_sample(sample);
+	/* Validate the input parameters. */
+	if (IS_BAD_SAMPLE(sample))
+		return DSP_ERR_BAD_SAMPLE;
 
-	result->length = sample->length;
-	for (i = 0; i < result->length; i++)
+	res->length = sample->length;
+	for (i = 0; i < res->length; i++)
 	{
-		result->data[i] = (0.54 - 0.46 * cos((2 * M_PI * i) /
-			(result->length - 1))) * sample->data[i];
+		res->data[i] = (0.54 - 0.46 * cos((2 * M_PI * i) /
+			(res->length - 1))) * sample->data[i];
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Apply the Hanning window to `sample` sequence in time domain.
+ * Apply the Hanning window to `sample` in time domain.
  */
-void dsp_window_hanning(const DspTime *sample, DspTime *result)
+DspStatus dsp_window_hanning(const DspTime *sample, DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_sample(sample);
+	/* Validate the input parameters. */
+	if (IS_BAD_SAMPLE(sample))
+		return DSP_ERR_BAD_SAMPLE;
 
-	result->length = sample->length;
-	for (i = 0; i < result->length; i++)
+	res->length = sample->length;
+	for (i = 0; i < res->length; i++)
 	{
-		result->data[i] = 0.5 * (1.0 - cos((2 * M_PI * i) /
-			(result->length - 1))) * sample->data[i];
+		res->data[i] = 0.5 * (1.0 - cos((2 * M_PI * i) /
+			(res->length - 1))) * sample->data[i];
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Apply the Blackman window to `sample` sequence in time domain.
+ * Apply the Blackman window to `sample` in time domain.
  */
-void dsp_window_blackman(const DspTime *sample, DspTime *result)
+DspStatus dsp_window_blackman(const DspTime *sample, DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_sample(sample);
+	/* Validate the input parameters. */
+	if (IS_BAD_SAMPLE(sample))
+		return DSP_ERR_BAD_SAMPLE;
 
-	result->length = sample->length;
-	for (i = 0; i < result->length; i++)
+	res->length = sample->length;
+	for (i = 0; i < res->length; i++)
 	{
-		result->data[i] = (0.42 - 0.5 * cos((2 * M_PI * i) /
-			(result->length - 1)) + 0.08 * cos((4 * M_PI * i) /
-			(result->length - 1))) * sample->data[i];
+		res->data[i] = (0.42 - 0.5 * cos((2 * M_PI * i) /
+			(res->length - 1)) + 0.08 * cos((4 * M_PI * i) /
+			(res->length - 1))) * sample->data[i];
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Apply the Chebyshev window to `sample` sequence by attenuating `factor` (dB)
+ * Apply the Chebyshev window to `sample` by attenuating `factor` (dB) 
  * in time domain.
  */
-void dsp_window_chebyshev(const DspTime *sample, int factor, DspTime *result)
+DspStatus dsp_window_chebyshev(const DspTime *sample, int factor, DspTime *res)
 {
 	int i;
 	double epsilon, cosine;
 
-	/* Validate the inputs. */
-	assert_sample(sample);
+	/* Validate the input parameters. */
+	if (IS_BAD_SAMPLE(sample))
+		return DSP_ERR_BAD_SAMPLE;
 
-	result->length = sample->length;
+	res->length = sample->length;
 	epsilon = acosh(pow(10.0, factor / 20.0));
-	for (i = 0; i < result->length; i++)
+	for (i = 0; i < res->length; i++)
 	{
-		cosine = M_PI * (2.0 * i - result->length + 1) / (2.0 * result->length);
-		result->data[i] = cosh(epsilon * cos(cosine)) * sample->data[i];
+		cosine = M_PI * (2.0 * i - res->length + 1) / (2.0 * res->length);
+		res->data[i] = cosh(epsilon * cos(cosine)) * sample->data[i];
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Apply the Kaiser window to `sample` sequence by attenuating `factor` (dB)
+ * Apply the Kaiser window to `sample` by attenuating `factor` (dB)
  * in time domain.
  */
-void dsp_window_kaiser(const DspTime *sample, int factor, DspTime *result)
+DspStatus dsp_window_kaiser(const DspTime *sample, int factor, DspTime *res)
 {
 	int i;
 	double epsilon, squared;
 
-	/* Validate the inputs. */
-	assert_sample(sample);
+	/* Validate the input parameters. */
+	if (IS_BAD_SAMPLE(sample))
+		return DSP_ERR_BAD_SAMPLE;
 
-	result->length = sample->length;
+	res->length = sample->length;
 	if (factor <= 21)
 	{
 		epsilon = 0.0;
@@ -119,10 +129,11 @@ void dsp_window_kaiser(const DspTime *sample, int factor, DspTime *result)
 		epsilon = 0.1102 * (factor - 8.7);
 	}
 
-	for (i = 0; i < result->length; i++)
+	for (i = 0; i < res->length; i++)
 	{
-		squared = pow(2.0 * i / (result->length - 1.0) - 1.0, 2.0);
-		result->data[i] = j0(epsilon * sqrt(1.0 - squared)) /
+		squared = pow(2.0 * i / (res->length - 1.0) - 1.0, 2.0);
+		res->data[i] = j0(epsilon * sqrt(1.0 - squared)) /
 			j0(epsilon) * sample->data[i];
 	}
+	return DSP_SUCCESS;
 }

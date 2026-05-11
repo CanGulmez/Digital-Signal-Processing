@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
  * @file 	signal.c
- * @author 	Can GULMEZ
- * @brief 	Signal wave operations of DSP.
+ * @author 	Can Gulmez
+ * @brief 	Signal wave generation operations of DSP.
  * 
  ******************************************************************************
  * @attention
  * 
- * Copyright (c) 2026 Can GULMEZ.
+ * Copyright (c) 2026 Can Gulmez.
  * All rights reserved.
  * 
  * This software is licensed under the MIT License.
@@ -15,253 +15,295 @@
  ******************************************************************************
  */
 
-#include "./dsp.h"
+#include "dsp.h"
 
 /**
- * Generate a normal (Gaussian) noise sequence which has `mean` and `stddev`
+ * Create a normal (Gaussian) noise which has `mean` and `stddev`
  * in time domain.
  */
-void dsp_signal_normal(double mean, double stddev, len_t length, DspTime *result)
+DspStatus dsp_signal_normal(double mean, double stddev, len_t length, DspTime *res)
 {
-	int i;
+	int i = 0;
 	double u1, u2, s, z0, z1;
 
-	/* Validate the inputs. */
-	assert_length(length);
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	i = 0;
-	srandom(time(NULL));		/* set random seed simultaneously */
-	result->length = length;
+	res->length = length;
 	while (i < length) 
 	{
-      /* Generate two uniform random numbers in (0,1]. */
+      /* Create two uniform random numbers in (0,1]. */
       u1 = (random() + 1.0) / (RAND_MAX + 2.0);
       u2 = (random() + 1.0) / (RAND_MAX + 2.0);
       /* Box-Muller transform */
       z0 = sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2);
       z1 = sqrt(-2.0 * log(u1)) * sin(2.0 * M_PI * u2);
       
-      result->data[i] = mean + z0 * stddev;
+      res->data[i] = mean + z0 * stddev;
       i++;
       if (i < length) 
 		{
-         result->data[i] = mean + z1 * stddev;
+         res->data[i] = mean + z1 * stddev;
          i++;
       }
    }
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate AWGN (Additive White Gaussian Noise) sample sequence which have
+ * Create AWGN (Additive White Gaussian Noise) sample which have
  * signal-to-noise ratio `snr` in time domain.
  */
-void dsp_signal_awgn(const DspTime *sample, double snr, DspTime *result)
+DspStatus dsp_signal_awgn(const DspTime *sample, double snr, DspTime *res)
 {
 	DspTime normal;
-	double power, stddev;
+	double stddev;
+	DspStatus status;
 
-	/* Validate the inputs. */
-	assert_sample(sample);
-	assert(snr > 0);
+	/* Validate the input parameters. */
+	if (IS_BAD_SAMPLE(sample))
+		return DSP_ERR_BAD_SAMPLE;
 
-	power = dsp_time_power(sample);
-	stddev = sqrt(power / pow(10.0, snr / 10.0));
-	dsp_signal_normal(0.0, stddev, sample->length, &normal);
-	dsp_time_add(sample, &normal, result);
+	if (snr <= 0.0)
+		return DSP_ERR_FALSE_COND;
+
+	stddev = sqrt(dsp_time_power(sample) / pow(10.0, snr / 10.0));
+	status = dsp_signal_normal(0.0, stddev, sample->length, &normal);
+	if (status != DSP_SUCCESS)
+		return status;
+
+	status = dsp_time_add(sample, &normal, res);
+	if (status != DSP_SUCCESS)
+		return status;
+
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a sine wave sequence sampled at `fs` frequency  which have
- * amplitude `A`, frequency `fc` and phase angle `theta` (in degrees) in
- * time domain.
+ * Create a sine wave sampled at `fs` frequency  which have amplitude `a`, 
+ * frequency `fc` and phase angle `theta` (in degrees) in time domain.
  */
-void dsp_signal_sin(double A, double fc, double fs, double theta, len_t length, 
-						  DspTime *result)
+DspStatus dsp_signal_sin(double a, double fc, double fs, double theta, len_t length, 
+						  		  DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert((fs > 2 * fc) && (fc > 0));
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	for (i = 0; i < result->length; i++)
+	if (fc * 2 > fs || fc <= 0.0)
+		return DSP_ERR_FALSE_COND;
+
+	res->length = length;
+	for (i = 0; i < res->length; i++)
 	{
-		result->data[i] = A * sin(2 * M_PI * fc * (i / fs) + RAD(theta));
+		res->data[i] = a * sin(2 * M_PI * fc * (i / fs) + RAD(theta));
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a sinc wave sequence sampled at `fs` frequency  which have
- * amplitude `A`, frequency `fc` and phase angle `theta` (in degrees) in
- * time domain.
+ * Create a sinc wave sampled at `fs` frequency  which have amplitude `a`, 
+ * frequency `fc` and phase angle `theta` (in degrees) in time domain.
  */
-void dsp_signal_sinc(double A, double fc, double fs, double theta, len_t length,
-							DspTime *result)
+DspStatus dsp_signal_sinc(double a, double fc, double fs, double theta, len_t length,
+									DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert((fs > 2 * fc) && (fc > 0));
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	for (i = 0; i < result->length; i++)
+	if (fc * 2 > fs || fc <= 0.0)
+		return DSP_ERR_FALSE_COND;
+
+	res->length = length;
+	for (i = 0; i < res->length; i++)
 	{
 		if (i == 0)
 		{
-			result->data[i] = A * 1.0;
+			res->data[i] = a;
 		}
 		else
 		{
-			result->data[i] = A * sin(2 * M_PI * fc * (i / fs) + RAD(theta)) /
+			res->data[i] = a * sin(2 * M_PI * fc * (i / fs) + RAD(theta)) /
 				(2 * M_PI * fc * (i / fs) + RAD(theta));
 		}
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a cosine wave sequence sampled at `fs` frequency  which have
- * amplitude `A`, frequency `fc` and phase angle `theta` (in degrees) in
- * time domain.
+ * Create a cosine wave sampled at `fs` frequency  which have amplitude `a`, 
+ * frequency `fc` and phase angle `theta` (in degrees) in time domain.
  */
-void dsp_signal_cos(double A, double fc, double fs, double theta, len_t length, 
-						  DspTime *result)
+DspStatus dsp_signal_cos(double a, double fc, double fs, double theta, len_t length, 
+						  		  DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert((fs > 2 * fc) && (fc > 0));
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	for (i = 0; i < result->length; i++)
+	if (fc * 2 > fs || fc <= 0.0)
+		return DSP_ERR_FALSE_COND;
+
+	res->length = length;
+	for (i = 0; i < res->length; i++)
 	{
-		result->data[i] = A * cos(2 * M_PI * fc * (i / fs) + RAD(theta));
+		res->data[i] = a * cos(2 * M_PI * fc * (i / fs) + RAD(theta));
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a impulse sequence where `index`.th is one and others 
- * are zeros in time domain.
+ * Create a impulse where `index`.th is one and others are zeros in time domain.
  */
-void dsp_signal_impulse(int index, len_t length, DspTime *result)
+DspStatus dsp_signal_impulse(double a, index_t index, len_t length, DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert(index >= 0 && index < length);
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	for (i = 0; i < result->length; i++)
+	if (index < 0 || index >= length)
+		return DSP_ERR_FALSE_COND;
+
+	res->length = length;
+	for (i = 0; i < res->length; i++)
 	{
 		if (i == index)
 		{
-			result->data[i] = 1.0;
+			res->data[i] = a;
 		}
 		else
 		{
-			result->data[i] = 0.0;
+			res->data[i] = 0.0;
 		}
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a step sequence where between of `findex` and `sindex`
- * are ones, others are `A` in time domain.
+ * Create a step where between of `findex` and `sindex` are `a`, others are zeros
+ * in time domain.
  */
-void dsp_signal_step(double A, int findex, int sindex, len_t length, 
-							DspTime *result)
+DspStatus dsp_signal_step(double a, index_t findex, index_t sindex, len_t length, 
+									DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert(findex >= 0 && sindex < length && findex <= sindex);
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	for (i = 0; i < result->length; i++)
+	if (findex < 0 || sindex < 0 || findex > sindex)
+		return DSP_ERR_FALSE_COND;
+
+	res->length = length;
+	for (i = 0; i < res->length; i++)
 	{
 		if (i >= findex && i <= sindex)
 		{
-			result->data[i] = A;
+			res->data[i] = a;
 		}
 		else
 		{
-			result->data[i] = 0.0;
+			res->data[i] = 0.0;
 		}
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a square wave sequence sampled at `fs` which have
- * amplitude `A`, and frequency `fc` in time domain.
+ * Create a square wave sampled at `fs` which have amplitude `a`, and 
+ * frequency `fc` in time domain.
  */
-void dsp_signal_square(double A, double fc, double fs, len_t length, 
-							  DspTime *result)
+DspStatus dsp_signal_square(double a, double fc, double fs, len_t length, 
+							 		  DspTime *res)
 {
 	int i;
 	DspTime squared;
+	DspStatus status;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert((fs > 2 * fc) && (fc > 0));
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	dsp_signal_sin(A, fc, fs, 0.0, length, &squared);
+	if (fc * 2 > fs || fc <= 0.0)
+		return DSP_ERR_FALSE_COND;
+
+	status = dsp_signal_sin(a, fc, fs, 0.0, length, &squared);
+	if (status != DSP_SUCCESS)
+		return status;
+
+	res->length = length;
 	for (i = 0; i < squared.length; i++)
 	{
 		if (squared.data[i] >= 0)
 		{
-			result->data[i] = A;
+			res->data[i] = a;
 		}
 		else
 		{
-			result->data[i] = -A;
+			res->data[i] = -a;
 		}
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a sawtooth sequence sampled at `fs` which have amplitude
- * `A` and frequency `fc` in time domain.
+ * Create a sawtooth sampled at `fs` which have amplitude `a` and 
+ * frequency `fc` in time domain.
  */
-void dsp_signal_sawtooth(double A, double fc, double fs, len_t length, 
-								 DspTime *result)
+DspStatus dsp_signal_sawtooth(double a, double fc, double fs, len_t length, 
+										 DspTime *res)
 {
 	int i;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert((fs > 2 * fc) && (fc > 0));
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	for (i = 0; i < result->length; i++)
+	if (fc * 2 > fs || fc <= 0.0)
+		return DSP_ERR_FALSE_COND;
+
+	res->length = length;
+	for (i = 0; i < res->length; i++)
 	{
-		result->data[i] = 2 * A * (fmod(i * fc / fs, 1.0) - 0.5);
+		res->data[i] = 2 * a * (fmod(i * fc / fs, 1.0) - 0.5);
 	}
+	return DSP_SUCCESS;
 }
 
 /**
- * Generate a triangle sequence sampled at `fs` which have amplitude
- * `A` and frequency `fc` in time domain.
+ * Create a triangle sampled at `fs` which have amplitude `a` and 
+ * frequency `fc` in time domain.
  */
-void dsp_signal_triangle(double A, double fc, double fs, len_t length,
-								 DspTime *result)
+DspStatus dsp_signal_triangle(double A, double fc, double fs, len_t length,
+										 DspTime *res)
 {
 	int i;
 	double t, sawtooth;
 
-	/* Validate the inputs. */
-	assert_length(length);
-	assert((fs > 2 * fc) && (fc > 0));
+	/* Validate the input parameters. */
+	if (IS_BAD_LEN(length))
+		return DSP_ERR_BAD_LEN;
 
-	result->length = length;
-	for (i = 0; i < result->length; i++)
+	if (fc * 2 > fs || fc <= 0.0)
+		return DSP_ERR_FALSE_COND;
+
+	res->length = length;
+	for (i = 0; i < res->length; i++)
 	{
       t = (double)i / fs;
       sawtooth = 2.0 * (t * fc - floor(0.5 + t * fc));
-      result->data[i] = 2.0 * A * fabs(sawtooth) - A;
+      res->data[i] = 2.0 * A * fabs(sawtooth) - A;
 	}
+	return DSP_SUCCESS;
 }
