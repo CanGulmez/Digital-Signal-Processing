@@ -15,19 +15,13 @@
  ******************************************************************************
  */
 
-#include "main.h"
+#include "../src/dsp.h"
 
-int main(void)
-{
-	plotting_sample();
-	convolving_samples();
-	extracting_freq_features();
-	applying_windows();
-	time_to_freq_domain();
-	filtering_samples();
-	make_beamforming();
-	cal_arrival_of_angle();
-	
-	return EXIT_SUCCESS;
-}
- 
+void plotting_sample(void);
+void convolving_samples(void);
+void extracting_freq_features(void);
+void applying_windows(void);
+void time_to_freq_domain(void);
+void filtering_samples(void);
+void make_beamforming(void);
+void cal_arrival_of_angle(void);

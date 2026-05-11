@@ -22,7 +22,7 @@
  * (MUSIC) for uniform circular phased array microphone system and 
  * return the angle in degrees which has the maximum spectrum value. 
  */
-DspStatus dsp_arrival_music(const DspArrival *arrival, int *res)
+int dsp_arrival_music(const DspArrival *arrival)
 {
 	int i, j, theta, maxangle;
 	double val, spectrum;
@@ -40,15 +40,6 @@ DspStatus dsp_arrival_music(const DspArrival *arrival, int *res)
    gsl_matrix_complex *En;
    gsl_complex z;
    gsl_vector_complex *a, *EnH_a, *EnEnHa;
-
-	/* Validate the input parameters. */
-	for (i = 0; i < mics; i++)
-	{
-		if (IS_BAD_SAMPLE(arrival->samples[i]))
-			return DSP_ERR_BAD_SAMPLE;
-	}
-	if (mics > MAX_MICS || freq <= 0.0 || radius <= 0.0 || sources > MAX_SOURCES)
-		return DSP_ERR_FALSE_COND;	
 
 	/* Allocate the required blocks. */
 	X = gsl_matrix_alloc(mics, arrival->samples[0]->length);
@@ -112,9 +103,6 @@ DspStatus dsp_arrival_music(const DspArrival *arrival, int *res)
 			maxangle = theta;
 		}
    }
-	/* Set the result. */
-	*res = maxangle;
-
 	/* Free allocated resources. */
    gsl_matrix_free(X);
    gsl_matrix_free(R);
@@ -126,5 +114,5 @@ DspStatus dsp_arrival_music(const DspArrival *arrival, int *res)
    gsl_vector_complex_free(EnH_a);
    gsl_vector_complex_free(EnEnHa);
 
-	return DSP_SUCCESS;;
+	return maxangle;
 }

@@ -34,8 +34,6 @@ extern "C" {
 #include <math.h>
 #include <string.h>
 #include <time.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 
 /* GNU scientific library */
 
@@ -321,7 +319,7 @@ DspStatus dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *res);
 
 /* DoA (Direction of Arrival) methods */
 
-DspStatus dsp_arrival_music(const DspArrival *arrival, int *res);
+int dsp_arrival_music(const DspArrival *arrival);
 
 #ifdef __cplusplus
 }

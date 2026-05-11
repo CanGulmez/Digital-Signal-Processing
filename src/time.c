@@ -477,12 +477,8 @@ double dsp_time_min(const DspTime *sample)
 double dsp_time_abs_max(const DspTime *sample)
 {
 	DspTime res;
-	DspStatus status;
-	
-	status = dsp_time_abs(sample, &res);
-	if (status != DSP_SUCCESS)
-		return 0.0;
 
+	dsp_time_abs(sample, &res);
 	return dsp_time_max(&res);
 }
 
@@ -492,12 +488,8 @@ double dsp_time_abs_max(const DspTime *sample)
 double dsp_time_abs_min(const DspTime *sample)
 {
 	DspTime res;
-	DspStatus status;
-	
-	status = dsp_time_abs(sample, &res);
-	if (status != DSP_SUCCESS)
-		return 0.0;
 
+	dsp_time_abs(sample, &res);
 	return dsp_time_min(&res);	
 }
 
@@ -864,7 +856,7 @@ DspStatus dsp_time_clip(const DspTime *sample, double lowest, double highest,
  * Convolve the `fsample` and `ssample` fully each other in time domain.
  */
 DspStatus dsp_time_convolve(const DspTime *fsample, const DspTime *ssample,
-							  DspTime *res)
+									 DspTime *res)
 {
 	int i, j;
 

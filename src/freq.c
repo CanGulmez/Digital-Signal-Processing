@@ -340,16 +340,16 @@ double dsp_freq_psd(const DspFreq *sample, index_t index)
 		pow(sample->data[index][1], 2.0)) / (double) sample->length;
 }
 
-// /**
-//  * Calculate the average power of `sample`.
-//  */
-// double dsp_freq_power(const DspFreq *sample)
-// {
-// 	DspTime transformed;
+/**
+ * Calculate the average power of `sample`.
+ */
+double dsp_freq_power(const DspFreq *sample)
+{
+	DspTime transformed;
 
-// 	dsp_transform_idft(sample, &transformed);
-// 	return dsp_time_power(&transformed);
-// }	
+	dsp_transform_idft(sample, &transformed);
+	return dsp_time_power(&transformed);
+}	
 
 /**
  * Calculate the spectral centroid of `sample`. `fs` refers
