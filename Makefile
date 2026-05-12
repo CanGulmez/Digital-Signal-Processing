@@ -22,7 +22,14 @@ LIB_DIR := ./lib
 .PHONY: all
 
 all:
+	@echo "--> Compiling the library source files..."
 	$(CC) $(SOURCES) -c $(CFLAGS) $(DEPENDS)
+
+	@echo "\n--> Archiving the static library..."
 	$(AR) $(LIB_DIR)/lib$(LIBRARY).a $(OBJECTS)
+
+	@echo "\n--> Deleting the unnecessary object files..."
 	$(RM) $(OBJECTS)
+
+	@echo "\n--> Compiling the example program..."
 	$(CC) $(MAIN) $(CFLAGS) -L$(LIB_DIR) -l$(LIBRARY) $(DEPENDS) -o $(BINARY)
