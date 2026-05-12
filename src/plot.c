@@ -250,6 +250,9 @@ void __plot_activate(GtkApplication *app, gpointer data)
 	gtk_window_present(GTK_WINDOW(window));
 }
 
+/*****************************************************************************/
+/*****************************************************************************/
+
 /**
  * Plot the `plotting` features which include the sample
  * data itself and some metadata in time domain.

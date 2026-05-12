@@ -294,11 +294,9 @@ DspStatus dsp_window_kaiser(const DspTime *sample, int factor, DspTime *res);
 DspStatus dsp_transform_dft(const DspTime *sample, DspFreq *res);
 DspStatus dsp_transform_dft_real(const DspTime *sample, DspFreq *res);
 DspStatus dsp_transform_idft(const DspFreq *sample, DspTime *res);
-// DspStatus dsp_transform_fft(const DspTime *sample, DspFreq *res);
-// DspStatus dsp_transform_ifft(const DspFreq *sample, DspTime *res);
-// DspStatus dsp_transform_dct(const DspTime *sample, DspTime *res);
-// DspStatus dsp_transform_idct(const DspTime *sample, DspTime *res);
-// DspStatus dsp_transform_hilbert(const DspTime *sample, DspTime *res);
+DspStatus dsp_transform_fft(const DspTime *sample, DspFreq *res);
+DspStatus dsp_transform_fft_real(const DspTime *sample, DspFreq *res);
+DspStatus dsp_transform_ifft(const DspFreq *sample, DspTime *res);
 
 /* FIR- and IIR-based filter methods */
 
