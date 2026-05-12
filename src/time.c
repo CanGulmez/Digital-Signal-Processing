@@ -629,58 +629,45 @@ double dsp_time_snr(const DspTime *sample, const DspTime *noise)
 	return 10.0 * log10(dsp_time_power(sample) / dsp_time_power(noise));
 }
 
-// /**
-//  * Calculate the Shannon entropy (bits) of `signal` sequence.
-//  */
-// double dsp_time_entropy(const DspTime *sample, int bins)
-// {
-// 	int i, bin;
-//    double min_val, max_val, bin_width;
-//    int *histogram;
-//    double entropy = 0.0;
+/**
+ * Calculate the Shannon entropy (bits) of `signal` sequence.
+ */
+double dsp_time_entropy(const DspTime *sample, int bins)
+{
+   int i, bin;
+   double min_val, max_val, bin_width, p;
+   int histogram[DATA_SIZE];
+   double entropy = 0.0;
 
-// 	/* Validate inputs. */
-// 	assert_sample(sample);
-// 	assert(bins > 0);
+   /* Constant signal check */
+   min_val = dsp_time_min(sample);
+   max_val = dsp_time_max(sample);
+   bin_width = (max_val - min_val) / bins;
+   if (bin_width < 1e-12)
+       return 0.0;
 
-// 	/* Get the max, min and width values. */
-// 	min_val = dsp_time_min(sample);
-//    max_val = dsp_time_max(sample);
-//    bin_width = (max_val - min_val) / bins; 
-//    if (bin_width < 1e-10)
-// 	{
-// 		return 0.0;
-// 	} 
+   /* Clear histogram (only the first `bins` elements) */
+   memset(histogram, 0, bins * sizeof(int));
 
-// 	/* Allocate and initialize the histogram. */
-// 	histogram = calloc(bins, sizeof(int));
-// 	for (i = 0; i < sample->length; i++)
-//    {
-//       bin = (int)((sample->data[i] - min_val) / bin_width);
-//       if (bin >= bins)
-// 		{
-// 			bin = bins - 1;
-// 		}
-//       if (bin < 0)
-// 		{
-// 			bin = 0;
-// 		}
-//       histogram[bin]++;
-//    }
-
-// 	/* Calculate Shannon entropy. */
-//    for (i = 0; i < bins; i++)
-//    {
-//       if (histogram[i] > 0)
-//       {
-//          double p = (double)histogram[i] / sample->length;
-//          entropy -= p * log2(p);
-//       }
-//    }
-// 	free(histogram);
-
-// 	return entropy;
-// }
+   /* Fill histogram */
+   for (i = 0; i < sample->length; i++)
+   {
+      bin = (int) floor((sample->data[i] - min_val) / bin_width);
+      if (bin < 0)      bin = 0;
+      if (bin >= bins)  bin = bins - 1;
+      histogram[bin]++;
+   }
+   /* Compute Shannon entropy */
+   for (i = 0; i < bins; i++)
+   {
+      if (histogram[i] > 0)
+      {
+         p = (double)histogram[i] / sample->length;
+         entropy -= p * log2(p);
+      }
+   }
+   return entropy;
+}
 
 /**
  * Sum up the all elements of `sample`.
