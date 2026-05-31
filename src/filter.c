@@ -107,14 +107,14 @@ DspStatus dsp_filter_fir(const DspTime *sample, DspFirFilter filter, double fc,
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if (fc <= 0.0 || fs < fc * 2 || taps <= 1 || taps % 2 != 1)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
-	if (IS_BAD_FIR_FILTER(filter))
-		return DSP_ERR_BAD_FIR_FILTER;
+	if (!IS_FIR_FILTER(filter))
+		return DSP_ERR_FIR_FILTER;
 
 	/* Calculate the windowed filter coefficients. */
 	status = __windowed_coeffs(fc, fs, taps, &windowed);
@@ -209,12 +209,12 @@ DspStatus dsp_filter_fir_band_stop(const DspTime *sample, double fc1, double fc2
 	DspTime kernel1, kernel2, bandpass, bandstop, convolved;
 	DspStatus status;
 
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if (fc1 <= 0.0 || fc2 <= 0.0 || fs <= 0.0 || fc1 >= fc2 || 
 		 taps < 1 || taps % 2 != 1)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	/* Build the low-pass kernel for fc2. */
 	status = __normalized_low_coeffs(fc2, fs, taps, &kernel2);
@@ -267,14 +267,14 @@ DspStatus dsp_filter_iir(const DspTime *sample, DspIirFilter filter, double fc,
 	double x, y;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
-	if (IS_BAD_IIR_FILTER(filter))
-		return DSP_ERR_BAD_IIR_FILTER;
+	if (!IS_IIR_FILTER(filter))
+		return DSP_ERR_IIR_FILTER;
 
 	if (fc <= 0.0 || fs < fc * 2 || q < 0.5 || q > 100.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	/* Calculate filter coefficients directly. */
 	switch (filter)

@@ -83,20 +83,20 @@ typedef const char *str_t;
 
 typedef enum _DspStatus
 {
-	DSP_SUCCESS = 0,			/* success */
+	DSP_SUCCESS = 1,			/* success */
 	DSP_ERR_NULL_PTR,			/* invalid pointer  */
-	DSP_ERR_BAD_LEN,			/* invalid length */
-	DSP_ERR_BAD_SAMPLE,		/* invalid pointer || invalid length */
+	DSP_ERR_LENGTH,			/* invalid length */
+	DSP_ERR_SAMPLE,			/* invalid pointer || invalid length */
 	DSP_ERR_MISMATCH,			/* sample length mismatch */
-	DSP_ERR_BAD_INDEX,		/* invalid index */
-	DSP_ERR_BAD_FIR_FILTER,	/* invalid fir filter type */
-	DSP_ERR_BAD_IIR_FILTER,	/* invalid iir filter type */
-	DSP_ERR_FALSE_COND		/* false condition statement */
+	DSP_ERR_INDEX,				/* invalid index */
+	DSP_ERR_FIR_FILTER,		/* invalid fir filter type */
+	DSP_ERR_IIR_FILTER,		/* invalid iir filter type */
+	DSP_ERR_PARAM				/* invalid function parameter */
 } DspStatus;
 
 typedef enum _DspColor
 {
-	DSP_COLOR_BLACK,
+	DSP_COLOR_BLACK = 1,
 	DSP_COLOR_RED,
 	DSP_COLOR_GREEN,
 	DSP_COLOR_BLUE,
@@ -113,13 +113,13 @@ typedef enum _DspColor
 
 typedef enum _DspFirFilter
 {
-	DSP_FIR_FILTER_LOW_PASS,
+	DSP_FIR_FILTER_LOW_PASS = 1,
 	DSP_FIR_FILTER_HIGH_PASS
 } DspFirFilter;
 
 typedef enum _DspIirFilter
 {
-	DSP_IIR_FILTER_LOW_PASS,
+	DSP_IIR_FILTER_LOW_PASS = 1,
 	DSP_IIR_FILTER_HIGH_PASS,
 	DSP_IIR_FILTER_BAND_PASS,
 	DSP_IIR_FILTER_BAND_STOP
@@ -171,19 +171,16 @@ typedef struct _DspPlot
 /*****************************************************************************/
 /*****************************************************************************/
 
-#define IS_NULL_PTR(obj) (obj == NULL)
-#define IS_BAD_LEN(length) (length < 1 || length > DATA_SIZE)
-#define IS_BAD_SAMPLE(sample) (IS_NULL_PTR(sample) || IS_BAD_LEN(sample->length))
-#define IS_MISMATCH(fsample, ssample) (fsample->length != ssample->length)
-#define IS_BAD_INDEX(sample, index) (index < 0 || index > sample->length)
-
-#define IS_BAD_FIR_FILTER(filter) (filter != DSP_FIR_FILTER_LOW_PASS && \
-											  filter != DSP_FIR_FILTER_HIGH_PASS)
-#define IS_BAD_IIR_FILTER(filter) (filter != DSP_IIR_FILTER_LOW_PASS &&  \
-											  filter != DSP_IIR_FILTER_HIGH_PASS && \
-											  filter != DSP_IIR_FILTER_BAND_PASS && \
-											  filter != DSP_IIR_FILTER_BAND_STOP)
-
+#define IS_LENGTH(length) ((length) >= 1 && (length) <= DATA_SIZE)
+#define IS_SAMPLE(sample) ((sample) != NULL && IS_LENGTH((sample)->length))
+#define IS_MISMATCH(fsample, ssample) ((fsample)->length != (ssample)->length)
+#define IS_INDEX(sample, index) ((index) >= 0 && (index) < (sample)->length)
+#define IS_FIR_FILTER(filter) ((filter) == DSP_FIR_FILTER_LOW_PASS || 	\
+										 (filter) == DSP_FIR_FILTER_HIGH_PASS)
+#define IS_IIR_FILTER(filter) ((filter) == DSP_IIR_FILTER_LOW_PASS ||  	\
+										 (filter) == DSP_IIR_FILTER_HIGH_PASS || 	\
+										 (filter) == DSP_IIR_FILTER_BAND_PASS || 	\
+										 (filter) == DSP_IIR_FILTER_BAND_STOP)
 
 /*****************************************************************************/
 /*****************************************************************************/

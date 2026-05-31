@@ -17,7 +17,6 @@
 
 #include "dsp.h"
 
-
 /**
  * Apply delay and sum beamforming for uniform circular phased array 
  * microphone system and return the enhanced sample.
@@ -37,11 +36,11 @@ DspStatus dsp_beamform_delay_sum(const DspBeamform *beamform, DspTime *res)
 	/* Validate the input parameters. */
 	for (i = 0; i < mics; i++)
 	{
-		if (IS_BAD_SAMPLE(beamform->samples[i]))
-			return DSP_ERR_BAD_SAMPLE;
+		if (!IS_SAMPLE(beamform->samples[i]))
+			return DSP_ERR_SAMPLE;
 	}
 	if (mics > MAX_MICS || fs <= 1.0 || radius <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	/* Calculate the delays between uniform microphones. */
 	for (i = 0; i < mics; i++)

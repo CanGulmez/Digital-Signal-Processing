@@ -25,8 +25,8 @@ DspStatus dsp_time_add(const DspTime *fsample, const DspTime *ssample, DspTime *
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	if (IS_MISMATCH(fsample, ssample))
 		return DSP_ERR_MISMATCH;
@@ -48,8 +48,8 @@ DspStatus dsp_time_sub(const DspTime *fsample, const DspTime *ssample, DspTime *
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	if (IS_MISMATCH(fsample, ssample))
 		return DSP_ERR_MISMATCH;
@@ -72,8 +72,8 @@ DspStatus dsp_time_scalar_mul(const DspTime *sample, double scalar, DspTime *res
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -92,8 +92,8 @@ DspStatus dsp_time_dot_mul(const DspTime *fsample, const DspTime *ssample, DspTi
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	if (IS_MISMATCH(fsample, ssample))
 		return DSP_ERR_MISMATCH;
@@ -112,7 +112,7 @@ DspStatus dsp_time_dot_mul(const DspTime *fsample, const DspTime *ssample, DspTi
 DspStatus dsp_time_scalar_div(const DspTime *sample, double scalar, DspTime *res)
 {
 	if (scalar == 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	return dsp_time_scalar_mul(sample, 1.0 / scalar, res);	
 }
@@ -127,11 +127,11 @@ DspStatus dsp_time_resize(const DspTime *sample, len_t length, DspTime *res)
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -150,15 +150,15 @@ DspStatus dsp_time_insert(const DspTime *sample, index_t index, double data,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
-	if (IS_BAD_INDEX(sample, index))
-		return DSP_ERR_BAD_INDEX;
+	if (!IS_INDEX(sample, index))
+		return DSP_ERR_INDEX;
 
 	res->length = sample->length + 1;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 		
 	for (i = 0; i < index; i++)
 	{
@@ -180,11 +180,11 @@ DspStatus dsp_time_remove(const DspTime *sample, index_t index, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
-	if (IS_BAD_INDEX(sample, index))
-		return DSP_ERR_BAD_INDEX;
+	if (!IS_INDEX(sample, index))
+		return DSP_ERR_INDEX;
 
 	res->length = sample->length - 1;
 	for (i = 0; i < index; i++)
@@ -222,8 +222,8 @@ DspStatus dsp_time_shift(const DspTime *sample, int shift, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	if (shift >= 0)
@@ -260,8 +260,8 @@ DspStatus dsp_time_delay_linear(const DspTime *sample, double delay, DspTime *re
 	double alpha;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (j = 0; j < res->length; j++)
@@ -292,8 +292,8 @@ DspStatus dsp_time_delay_lagrange(const DspTime *sample, double delay,
 	double alpha, xm, x0, xp;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (j = 0; j < res->length; j++)
@@ -327,12 +327,12 @@ DspStatus dsp_time_concat(const DspTime *fsample, const DspTime *ssample,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = fsample->length + ssample->length;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 
 	for (i = 0; i < fsample->length; i++)
 	{
@@ -353,8 +353,8 @@ DspStatus dsp_time_abs(const DspTime *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -373,8 +373,8 @@ DspStatus dsp_time_rand(len_t length, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -394,8 +394,8 @@ DspStatus dsp_time_randn(len_t length, DspTime *res)
 	double u1, u2, z0, z1;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	res->length = length;
 	for (i = 0; i < res->length; i += 2)
@@ -708,8 +708,8 @@ DspStatus dsp_time_scale(const DspTime *sample, double scale, DspTime *res)
 	double absmax;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	absmax = dsp_time_abs_max(sample);
 	res->length = sample->length;
@@ -728,15 +728,15 @@ DspStatus dsp_time_downsample(const DspTime *sample, int factor, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if (factor < 1 || factor >= sample->length)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = (len_t) ceil((double) sample->length / factor);
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 
 	for (i = 0; i < res->length; i++)
 	{
@@ -753,15 +753,15 @@ DspStatus dsp_time_upsample(const DspTime *sample, int factor, DspTime *res)
 	int i, j;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if (factor < 1 || factor >= sample->length)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = sample->length * factor;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 
 	for (i = 0; i < sample->length; i++)
 	{
@@ -782,8 +782,8 @@ DspStatus dsp_time_peaks(const DspTime *sample, double threshold, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	res->data[0] = 0.0;
@@ -814,11 +814,11 @@ DspStatus dsp_time_clip(const DspTime *sample, double lowest, double highest,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if (highest < lowest)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -848,12 +848,12 @@ DspStatus dsp_time_convolve(const DspTime *fsample, const DspTime *ssample,
 	int i, j;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = fsample->length + ssample->length - 1;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 
 	for (i = 0; i < res->length; i++)
 	{
@@ -880,12 +880,12 @@ DspStatus dsp_time_auto_corr(const DspTime *sample, DspTime *res)
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = 2 * sample->length - 1;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 
 	len = sample->length;
 	for (i = -(len - 1); i < len; i++)
@@ -919,8 +919,8 @@ DspStatus dsp_time_auto_corr_neg(const DspTime *sample, DspTime *res)
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	status = dsp_time_auto_corr(sample, &correlated);
 	if (status != DSP_SUCCESS)
@@ -944,8 +944,8 @@ DspStatus dsp_time_auto_corr_pos(const DspTime *sample, DspTime *res)
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	status = dsp_time_auto_corr(sample, &correlated);
 	if (status != DSP_SUCCESS)
@@ -972,16 +972,16 @@ DspStatus dsp_time_cross_corr(const DspTime *fsample, const DspTime *ssample,
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 		
 	if (IS_MISMATCH(fsample, ssample))
 		return DSP_ERR_MISMATCH;
 
 	len = fsample->length;
 	res->length = fsample->length + ssample->length - 1;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 
 	for (i = -(len - 1); i < len; i++)
 	{
@@ -1016,8 +1016,8 @@ DspStatus dsp_time_cross_corr_neg(const DspTime *fsample, const DspTime *ssample
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	status = dsp_time_cross_corr(fsample, ssample, &correlated);
 	if (status != DSP_SUCCESS)
@@ -1043,8 +1043,8 @@ DspStatus dsp_time_cross_corr_pos(const DspTime *fsample, const DspTime *ssample
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	status = dsp_time_cross_corr(fsample, ssample, &correlated);
 	if (status != DSP_SUCCESS)

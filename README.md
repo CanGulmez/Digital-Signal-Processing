@@ -15,12 +15,12 @@ $ sudo apt install libgtk-4-dev libgsl-dev
 
 Generally, the all sample/data structures are defined with fixed-side buffer named
 `DATA_SIZE` due to real-time & deterministic requirements. You MUST set it according to 
-your considerations.
+your considerations. 
 
 Time-domain and frequency domain data structures are defined seperated named `DspTime`
 and `DspFreq`. Also there are the other structures for specific usages. 
 
-Also I put the some example programs under `/example` directory. For example, let's
+Also I put the some example programs under `/examples` directory. For example, let's
 consider this program:
 
 ```c

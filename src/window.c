@@ -17,7 +17,6 @@
 
 #include "dsp.h"
 
-
 /**
  * Apply the Hamming window to `sample` in time domain.
  */
@@ -26,8 +25,8 @@ DspStatus dsp_window_hamming(const DspTime *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -46,8 +45,8 @@ DspStatus dsp_window_hanning(const DspTime *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -66,8 +65,8 @@ DspStatus dsp_window_blackman(const DspTime *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -89,8 +88,8 @@ DspStatus dsp_window_chebyshev(const DspTime *sample, int factor, DspTime *res)
 	double epsilon, cosine;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	epsilon = acosh(pow(10.0, factor / 20.0));
@@ -112,8 +111,8 @@ DspStatus dsp_window_kaiser(const DspTime *sample, int factor, DspTime *res)
 	double epsilon, squared;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	if (factor <= 21)

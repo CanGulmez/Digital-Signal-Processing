@@ -26,8 +26,8 @@ DspStatus dsp_freq_add(const DspFreq *fsample, const DspFreq *ssample,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	if (IS_MISMATCH(fsample, ssample))
 		return DSP_ERR_MISMATCH;
@@ -50,8 +50,8 @@ DspStatus dsp_freq_sub(const DspFreq *fsample, const DspFreq *ssample,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	if (IS_MISMATCH(fsample, ssample))
 		return DSP_ERR_MISMATCH;
@@ -73,8 +73,8 @@ DspStatus dsp_freq_scalar_mul(const DspFreq *sample, double scalar, DspFreq *res
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -94,8 +94,8 @@ DspStatus dsp_freq_dot_mul(const DspFreq *fsample, const DspFreq *ssample,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	if (IS_MISMATCH(fsample, ssample))
 		return DSP_ERR_MISMATCH;
@@ -117,7 +117,7 @@ DspStatus dsp_freq_dot_mul(const DspFreq *fsample, const DspFreq *ssample,
 DspStatus dsp_freq_scalar_div(const DspFreq *sample, double scalar, DspFreq *res)
 {
 	if (scalar == 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	return dsp_freq_scalar_mul(sample, (1.0 / scalar), res);
 }
@@ -131,11 +131,11 @@ DspStatus dsp_freq_resize(const DspFreq *sample, len_t length, DspFreq *res)
 	int i, j;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -155,15 +155,15 @@ DspStatus dsp_freq_insert(const DspFreq *sample, index_t index, double real,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
-	if (IS_BAD_INDEX(sample, index))
-		return DSP_ERR_BAD_INDEX;
+	if (!IS_INDEX(sample, index))
+		return DSP_ERR_INDEX;
 
 	res->length = sample->length + 1;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 
 	for (i = 0; i < index; i++)
 	{
@@ -188,11 +188,11 @@ DspStatus dsp_freq_remove(const DspFreq *sample, index_t index, DspFreq *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
-	if (IS_BAD_INDEX(sample, index))
-		return DSP_ERR_BAD_INDEX;
+	if (!IS_INDEX(sample, index))
+		return DSP_ERR_INDEX;
 
 	res->length = sample->length - 1;
 	for (i = 0; i < index; i++)
@@ -234,12 +234,12 @@ DspStatus dsp_freq_concat(const DspFreq *fsample, const DspFreq *ssample,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(fsample) || IS_BAD_SAMPLE(ssample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(fsample) || !IS_SAMPLE(ssample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = fsample->length + ssample->length;
-	if (IS_BAD_LEN(res->length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(res->length))
+		return DSP_ERR_LENGTH;
 		
 	memcpy(res->data, fsample->data, sizeof(double) * 2 * fsample->length);
 	for (i = fsample->length; i < res->length; i++)
@@ -258,8 +258,8 @@ DspStatus dsp_freq_real(const DspFreq *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -277,8 +277,8 @@ DspStatus dsp_freq_imag(const DspFreq *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -296,8 +296,8 @@ DspStatus dsp_freq_magnitude(const DspFreq *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -316,8 +316,8 @@ DspStatus dsp_freq_phase(const DspFreq *sample, DspTime *res)
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -333,7 +333,7 @@ DspStatus dsp_freq_phase(const DspFreq *sample, DspTime *res)
  */
 double dsp_freq_psd(const DspFreq *sample, index_t index)
 {
-	if (IS_BAD_SAMPLE(sample) || IS_BAD_INDEX(sample, index))
+	if (!IS_SAMPLE(sample) || !IS_INDEX(sample, index))
       return 0.0;
 
 	return (pow(sample->data[index][0], 2.0) +

@@ -43,8 +43,8 @@ DspStatus dsp_transform_dft(const DspTime *sample, DspFreq *res)
 	double real, imag, inner;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	inner = 2 * M_PI / res->length;
@@ -73,8 +73,8 @@ DspStatus dsp_transform_dft_real(const DspTime *sample, DspFreq *res)
 	DspFreq transformed;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	dsp_transform_dft(sample, &transformed);
 	res->length = (len_t) (transformed.length / 2 + 1);
@@ -96,8 +96,8 @@ DspStatus dsp_transform_idft(const DspFreq *sample, DspTime *res)
 	double sum = 0.0;
 	
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	res->length = sample->length;
 	for (i = 0; i < res->length; i++)
@@ -130,11 +130,11 @@ DspStatus dsp_transform_fft(const DspTime *sample, DspFreq *res)
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if ((n & (n - 1)) != 0)
-		return DSP_ERR_BAD_LEN;
+		return DSP_ERR_LENGTH;
 
 	/* m = log2(n) */
 	while ((1 << m) < n) m++;
@@ -190,8 +190,8 @@ DspStatus dsp_transform_fft_real(const DspTime *sample, DspFreq *res)
 	DspFreq transformed;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	dsp_transform_fft(sample, &transformed);
 	res->length = (len_t) (transformed.length / 2 + 1);
@@ -218,11 +218,11 @@ DspStatus dsp_transform_ifft(const DspFreq *sample, DspTime *res)
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if ((n & (n - 1)) != 0)
-		return DSP_ERR_BAD_LEN;
+		return DSP_ERR_LENGTH;
 
 	/* m = log2(n) */
 	while ((1 << m) < n) m++;

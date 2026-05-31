@@ -27,8 +27,8 @@ DspStatus dsp_signal_normal(double mean, double stddev, len_t length, DspTime *r
 	double u1, u2, s, z0, z1;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	res->length = length;
 	while (i < length) 
@@ -62,11 +62,11 @@ DspStatus dsp_signal_awgn(const DspTime *sample, double snr, DspTime *res)
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_SAMPLE(sample))
-		return DSP_ERR_BAD_SAMPLE;
+	if (!IS_SAMPLE(sample))
+		return DSP_ERR_SAMPLE;
 
 	if (snr <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	stddev = sqrt(dsp_time_power(sample) / pow(10.0, snr / 10.0));
 	status = dsp_signal_normal(0.0, stddev, sample->length, &normal);
@@ -90,11 +90,11 @@ DspStatus dsp_signal_sin(double a, double fc, double fs, double theta, len_t len
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (fc * 2 > fs || fc <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -114,11 +114,11 @@ DspStatus dsp_signal_sinc(double a, double fc, double fs, len_t length,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (fc * 2 > fs || fc <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -146,11 +146,11 @@ DspStatus dsp_signal_cos(double a, double fc, double fs, double theta, len_t len
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (fc * 2 > fs || fc <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -168,11 +168,11 @@ DspStatus dsp_signal_impulse(double a, index_t index, len_t length, DspTime *res
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (index < 0 || index >= length)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -199,11 +199,11 @@ DspStatus dsp_signal_step(double a, index_t findex, index_t sindex, len_t length
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (findex < 0 || sindex < 0 || findex > sindex)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -232,11 +232,11 @@ DspStatus dsp_signal_square(double a, double fc, double fs, len_t length,
 	DspStatus status;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (fc * 2 > fs || fc <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	status = dsp_signal_sin(a, fc, fs, 0.0, length, &squared);
 	if (status != DSP_SUCCESS)
@@ -267,11 +267,11 @@ DspStatus dsp_signal_sawtooth(double a, double fc, double fs, len_t length,
 	int i;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (fc * 2 > fs || fc <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
@@ -292,11 +292,11 @@ DspStatus dsp_signal_triangle(double A, double fc, double fs, len_t length,
 	double t, sawtooth;
 
 	/* Validate the input parameters. */
-	if (IS_BAD_LEN(length))
-		return DSP_ERR_BAD_LEN;
+	if (!IS_LENGTH(length))
+		return DSP_ERR_LENGTH;
 
 	if (fc * 2 > fs || fc <= 0.0)
-		return DSP_ERR_FALSE_COND;
+		return DSP_ERR_PARAM;
 
 	res->length = length;
 	for (i = 0; i < res->length; i++)
