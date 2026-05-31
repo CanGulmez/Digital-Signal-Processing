@@ -53,9 +53,8 @@ extern "C" {
 /* User-defined constants */
 
 #define DATA_SIZE					1024
-
 #define MAX_MICS					24 
-#define MAX_SOURCES        	8       
+#define MAX_SOURCES        	8  
 #define SOUND_SPEED        	343.0    // m/s
 
 #define DEG(rad)           	(rad * 180.0 / M_PI)
@@ -172,9 +171,11 @@ typedef struct _DspPlot
 /*****************************************************************************/
 
 #define IS_LENGTH(length) ((length) >= 1 && (length) <= DATA_SIZE)
-#define IS_SAMPLE(sample) ((sample) != NULL && IS_LENGTH((sample)->length))
 #define IS_MISMATCH(fsample, ssample) ((fsample)->length != (ssample)->length)
 #define IS_INDEX(sample, index) ((index) >= 0 && (index) < (sample)->length)
+
+#define IS_SAMPLE(sample) ((sample) != NULL && IS_LENGTH((sample)->length))
+
 #define IS_FIR_FILTER(filter) ((filter) == DSP_FIR_FILTER_LOW_PASS || 	\
 										 (filter) == DSP_FIR_FILTER_HIGH_PASS)
 #define IS_IIR_FILTER(filter) ((filter) == DSP_IIR_FILTER_LOW_PASS ||  	\
