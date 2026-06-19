@@ -33,21 +33,21 @@ DspStatus dsp_signal_normal(double mean, double stddev, len_t length, DspTime *r
 	res->length = length;
 	while (i < length) 
 	{
-      /* Create two uniform random numbers in (0,1]. */
-      u1 = (random() + 1.0) / (RAND_MAX + 2.0);
-      u2 = (random() + 1.0) / (RAND_MAX + 2.0);
-      /* Box-Muller transform */
-      z0 = sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2);
-      z1 = sqrt(-2.0 * log(u1)) * sin(2.0 * M_PI * u2);
+    	/* Create two uniform random numbers in (0,1]. */
+    	u1 = (random() + 1.0) / (RAND_MAX + 2.0);
+    	u2 = (random() + 1.0) / (RAND_MAX + 2.0);
+    	/* Box-Muller transform */
+    	z0 = sqrt(-2.0 * log(u1)) * cos(2.0 * M_PI * u2);
+    	z1 = sqrt(-2.0 * log(u1)) * sin(2.0 * M_PI * u2);
       
-      res->data[i] = mean + z0 * stddev;
-      i++;
-      if (i < length) 
+    	res->data[i] = mean + z0 * stddev;
+    	i++;
+    	if (i < length) 
 		{
-         res->data[i] = mean + z1 * stddev;
-         i++;
-      }
-   }
+    		res->data[i] = mean + z1 * stddev;
+    		i++;
+    	}
+	}
 	return DSP_SUCCESS;
 }
 

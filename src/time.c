@@ -7,7 +7,7 @@
  ******************************************************************************
  * @attention
  * 
- * Copyright (c) 2026 Can GULMEZ.
+ * Copyright (c) 2026 Can Gulmez.
  * All rights reserved.
  * 
  * This software is licensed under the MIT License.
@@ -310,9 +310,9 @@ DspStatus dsp_time_delay_lagrange(const DspTime *sample, double delay,
 			xm = sample->data[i - 1];
 			x0 = sample->data[i];
 			xp = sample->data[i + 1];
-			res->data[j] = xm * (alpha * (alpha - 1.0)) * \
-				0.5 - x0 * ((alpha + 1.0) * (alpha - 1.0)) + \
-				xp * (alpha * (alpha + 1.0)) * 0.5;
+			res->data[j] = xm * (alpha * (alpha - 1.0)) / 2.0 - 
+						   x0 * ((alpha + 1.0) * (alpha - 1.0)) + 
+						   xp * ((alpha + 1.0) * alpha) / 2.0;
 		}
 	}
 	return DSP_SUCCESS;

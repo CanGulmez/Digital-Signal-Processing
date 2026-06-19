@@ -97,7 +97,7 @@ DspStatus __normalized_low_coeffs(double fc, double fs, int taps, DspTime *res)
  * in time domain.
  */
 DspStatus dsp_filter_fir(const DspTime *sample, DspFirFilter filter, double fc, 
-								 double fs, int taps, DspTime *res)
+						 double fs, int taps, DspTime *res)
 {
 	int i;
 	len_t offset;
@@ -163,7 +163,7 @@ DspStatus dsp_filter_fir(const DspTime *sample, DspFirFilter filter, double fc,
  * Apply the FIR low-pass filter to `sample` in time domain.
  */
 DspStatus dsp_filter_fir_low_pass(const DspTime *sample, double fc, double fs,
-											 int taps, DspTime *res)
+								  int taps, DspTime *res)
 {
 	return dsp_filter_fir(sample, DSP_FIR_FILTER_LOW_PASS, fc, fs, taps, res);
 }
@@ -172,7 +172,7 @@ DspStatus dsp_filter_fir_low_pass(const DspTime *sample, double fc, double fs,
  * Apply the FIR high-pass filter to `sample` in time domain.
  */
 DspStatus dsp_filter_fir_high_pass(const DspTime *sample, double fc, double fs,
-											  int taps, DspTime *res)
+								   int taps, DspTime *res)
 {
 	return dsp_filter_fir(sample, DSP_FIR_FILTER_HIGH_PASS, fc, fs, taps, res);
 }
@@ -181,7 +181,7 @@ DspStatus dsp_filter_fir_high_pass(const DspTime *sample, double fc, double fs,
  * Apply the FIR band-pass filter to `sample` in time domain.
  */
 DspStatus dsp_filter_fir_band_pass(const DspTime *sample, double fc1, double fc2,
-											  double fs, int taps, DspTime *res)
+								   double fs, int taps, DspTime *res)
 {
 	DspTime low, high;
 	DspStatus status;
@@ -201,7 +201,7 @@ DspStatus dsp_filter_fir_band_pass(const DspTime *sample, double fc1, double fc2
  * Apply the FIR band-stop filter to `sample` in time domain.
  */ 
 DspStatus dsp_filter_fir_band_stop(const DspTime *sample, double fc1, double fc2, 
-											  double fs, int taps, DspTime *res)
+								   double fs, int taps, DspTime *res)
 {
 	int i, n = (taps - 1) / 2;
 	double delta;
@@ -257,7 +257,7 @@ DspStatus dsp_filter_fir_band_stop(const DspTime *sample, double fc1, double fc2
  * Apply IIR 2nd-order Butterworth filter to `sample` in time domain.
  */
 DspStatus dsp_filter_iir(const DspTime *sample, DspIirFilter filter, double fc, 
-								 double fs, double q, DspTime *res)
+						 double fs, double q, DspTime *res)
 {
 	int i;
 	double w0 = 2.0 * M_PI * fc / fs;
@@ -281,14 +281,14 @@ DspStatus dsp_filter_iir(const DspTime *sample, DspIirFilter filter, double fc,
 	{
 		case DSP_IIR_FILTER_LOW_PASS:
 			b0 = (1.0 - cos(w0)) / 2.0; b1 = 1.0 - cos(w0);
-      	b2 = b0; a0 = 1.0 + alpha;
-      	a1 = -2.0 * cos(w0); a2 = 1.0 - alpha;
+      		b2 = b0; a0 = 1.0 + alpha;
+      		a1 = -2.0 * cos(w0); a2 = 1.0 - alpha;
 			break;
 
 		case DSP_IIR_FILTER_HIGH_PASS:
 			b0 = (1.0 + cos(w0)) / 2.0; b1 = -(1.0 + cos(w0));
-      	b2 = b0; a0 = 1.0 + alpha;
-      	a1 = -2.0 * cos(w0); a2 = 1.0 - alpha;
+      		b2 = b0; a0 = 1.0 + alpha;
+      		a1 = -2.0 * cos(w0); a2 = 1.0 - alpha;
 			break;
 
 		case DSP_IIR_FILTER_BAND_PASS:
@@ -299,8 +299,8 @@ DspStatus dsp_filter_iir(const DspTime *sample, DspIirFilter filter, double fc,
 
 		case DSP_IIR_FILTER_BAND_STOP:
 			b0 = 1.0; b1 = -2.0 * cos(w0);
-      	b2 = 1.0; a0 = 1.0 + alpha;
-      	a1 = -2.0 * cos(w0); a2 = 1.0 - alpha;
+      		b2 = 1.0; a0 = 1.0 + alpha;
+      		a1 = -2.0 * cos(w0); a2 = 1.0 - alpha;
 			break;
 	}
 	b0 /= a0; b1 /= a0; b2 /= a0; a1 /= a0; a2 /= a0;
@@ -323,7 +323,7 @@ DspStatus dsp_filter_iir(const DspTime *sample, DspIirFilter filter, double fc,
  * Apply 2nd-order Butterworth low-pass filter to 'sample' in time domain.
  */
 DspStatus dsp_filter_iir_low_pass(const DspTime *sample, double fc, double fs, 
-											 DspTime *res)
+								  DspTime *res)
 {
 	return dsp_filter_iir(sample, DSP_IIR_FILTER_LOW_PASS, fc, fs, 0.7071, res);
 }
@@ -332,7 +332,7 @@ DspStatus dsp_filter_iir_low_pass(const DspTime *sample, double fc, double fs,
  * Apply 2nd-order Butterworth high-pass filter to 'sample' in time domain.
  */
 DspStatus dsp_filter_iir_high_pass(const DspTime *sample, double fc, double fs, 
-											  DspTime *res)
+								   DspTime *res)
 {
 	return dsp_filter_iir(sample, DSP_IIR_FILTER_HIGH_PASS, fc, fs, 0.7071, res);
 }
@@ -341,7 +341,7 @@ DspStatus dsp_filter_iir_high_pass(const DspTime *sample, double fc, double fs,
  * Apply 2nd-order Butterworth band-pass filter to 'sample' in time domain.
  */
 DspStatus dsp_filter_iir_band_pass(const DspTime *sample, double fc, double fs, 
-											  double q, DspTime *res)
+								   double q, DspTime *res)
 {
 	return dsp_filter_iir(sample, DSP_IIR_FILTER_BAND_PASS, fc, fs, q, res);
 }
@@ -350,7 +350,8 @@ DspStatus dsp_filter_iir_band_pass(const DspTime *sample, double fc, double fs,
  * Apply 2nd-order Butterworth band-stop filter to 'sample' in time domain.
  */
 DspStatus dsp_filter_iir_band_stop(const DspTime *sample, double fc, double fs, 
-											  double q, DspTime *res)
+								   double q, DspTime *res)
 {
 	return dsp_filter_iir(sample, DSP_IIR_FILTER_BAND_STOP, fc, fs, q, res);
 }
+ 

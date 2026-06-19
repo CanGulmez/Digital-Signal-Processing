@@ -240,7 +240,8 @@ void __plot_activate(GtkApplication *app, gpointer data)
 
 	/* Plut the plotting widget. */
 	area = gtk_drawing_area_new();
-	gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(area), __plot_drawing_area, (gpointer) data, NULL);
+	gtk_drawing_area_set_draw_func(GTK_DRAWING_AREA(area), __plot_drawing_area, 
+		(gpointer) data, NULL);
 
 	gtk_widget_set_hexpand(area, TRUE);
 	gtk_widget_set_vexpand(area, TRUE);

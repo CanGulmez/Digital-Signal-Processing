@@ -52,23 +52,23 @@ extern "C" {
  
 /* User-defined constants */
 
-#define DATA_SIZE					1024
-#define MAX_MICS					24 
+#define DATA_SIZE			1024
+#define MAX_MICS			24 
 #define MAX_SOURCES        	8  
 #define SOUND_SPEED        	343.0    // m/s
 
-#define DEG(rad)           	(rad * 180.0 / M_PI)
-#define RAD(deg)           	(deg * M_PI / 180.0)
+#define DEG(rad)           	((rad) * 180.0 / M_PI)
+#define RAD(deg)           	((deg) * M_PI / 180.0)
 
-#define PLOT_ID					"com.example.dsp"
-#define PLOT_MARGIN				40		/* pixel */
-#define PLOT_GRID					20		/* pixel */
+#define PLOT_ID				"com.example.dsp"
+#define PLOT_MARGIN			40		/* pixel */
+#define PLOT_GRID			20		/* pixel */
 
 /*****************************************************************************/
 /*****************************************************************************/
 
 /* User-defined data types */
- 
+
 typedef unsigned int len_t;
 typedef int index_t;
 typedef unsigned char mic_t;
@@ -131,40 +131,40 @@ typedef enum _DspIirFilter
 
 typedef struct _DspTime
 {
-   len_t length;
-   double data[DATA_SIZE];
+	len_t length;
+	double data[DATA_SIZE];
 } DspTime;
 
 typedef struct _DspFreq
 {
-   len_t length;
-   double data[DATA_SIZE][2];
+	len_t length;
+	double data[DATA_SIZE][2];
 } DspFreq;
 
 typedef struct _DspArrival
 {
-   mic_t mics;								/* mics in phased array */
-   double radius;                   /* radius in meters */
-   double freq;                     /* signal frequency in Hz */
-   src_t sources;							/* sound sources */
-   DspTime *samples[MAX_MICS];		
+	mic_t mics;						/* mics in phased array */
+	double radius;                  /* radius in meters */
+	double freq;                    /* signal frequency in Hz */
+	src_t sources;					/* sound sources */
+	DspTime *samples[MAX_MICS];		
 } DspArrival;
 
 typedef struct _DspBeamform
 {
-   mic_t mics;								/* mics in phased array */
-   double fs;                     	/* sampling frequency in Hz */
-   double radius;                   /* radius in meter */
-   double theta;                    /* arrival angle in degrees */
-   DspTime *samples[MAX_MICS];
+	mic_t mics;						/* mics in phased array */
+	double fs;                     	/* sampling frequency in Hz */
+	double radius;                  /* radius in meter */
+	double theta;                   /* arrival angle in degrees */
+	DspTime *samples[MAX_MICS];
 } DspBeamform;
 
 typedef struct _DspPlot
 {
-	str_t title;							/* title of plot */
-	double width;							/* sample data line width */
-	DspColor color;						/* sample data line color */
-	DspTime *sample;						/* sample to be plotted */
+	str_t title;					/* title of plot */
+	double width;					/* sample data line width */
+	DspColor color;					/* sample data line color */
+	DspTime *sample;				/* sample to be plotted */
 } DspPlot;
 
 /*****************************************************************************/
@@ -177,11 +177,11 @@ typedef struct _DspPlot
 #define IS_SAMPLE(sample) ((sample) != NULL && IS_LENGTH((sample)->length))
 
 #define IS_FIR_FILTER(filter) ((filter) == DSP_FIR_FILTER_LOW_PASS || 	\
-										 (filter) == DSP_FIR_FILTER_HIGH_PASS)
+							   (filter) == DSP_FIR_FILTER_HIGH_PASS)
 #define IS_IIR_FILTER(filter) ((filter) == DSP_IIR_FILTER_LOW_PASS ||  	\
-										 (filter) == DSP_IIR_FILTER_HIGH_PASS || 	\
-										 (filter) == DSP_IIR_FILTER_BAND_PASS || 	\
-										 (filter) == DSP_IIR_FILTER_BAND_STOP)
+							   (filter) == DSP_IIR_FILTER_HIGH_PASS || 	\
+							   (filter) == DSP_IIR_FILTER_BAND_PASS || 	\
+							   (filter) == DSP_IIR_FILTER_BAND_STOP)
 
 /*****************************************************************************/
 /*****************************************************************************/
@@ -229,7 +229,7 @@ DspStatus dsp_time_scale(const DspTime *sample, double scale, DspTime *res);
 DspStatus dsp_time_downsample(const DspTime *sample, int factor, DspTime *res);
 DspStatus dsp_time_upsample(const DspTime *sample, int factor, DspTime *res);
 DspStatus dsp_time_peaks(const DspTime *sample, double threshold, DspTime *res);
-DspStatus dsp_time_clip(const DspTime *sample, double min_val, double max_val, DspTime *res);
+DspStatus dsp_time_clip(const DspTime *sample, double lowest, double highest, DspTime *res);
 DspStatus dsp_time_convolve(const DspTime *fsample, const DspTime *ssample, DspTime *res);
 DspStatus dsp_time_auto_corr(const DspTime *sample, DspTime *res);
 DspStatus dsp_time_auto_corr_neg(const DspTime *sample, DspTime *res);

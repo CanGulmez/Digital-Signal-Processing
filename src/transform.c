@@ -105,9 +105,9 @@ DspStatus dsp_transform_idft(const DspFreq *sample, DspTime *res)
 		for (j = 0; j < res->length; j++)
 		{
 			sum += sample->data[j][0] * 
-					 cos(2 * M_PI * i * j / res->length) - 
-					 sample->data[j][1] * 
-					 sin(2 * M_PI * i * j / res->length);
+				   cos(2 * M_PI * i * j / res->length) - 
+				   sample->data[j][1] * 
+				   sin(2 * M_PI * i * j / res->length);
 		}
 		res->data[i] = (double) sum / res->length;
 		sum = 0.0;
@@ -132,6 +132,9 @@ DspStatus dsp_transform_fft(const DspTime *sample, DspFreq *res)
 	/* Validate the input parameters. */
 	if (!IS_SAMPLE(sample))
 		return DSP_ERR_SAMPLE;
+
+	if (sample->length % 2 != 0)
+		return DSP_ERR_PARAM;
 
 	if ((n & (n - 1)) != 0)
 		return DSP_ERR_LENGTH;

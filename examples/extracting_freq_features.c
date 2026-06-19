@@ -69,7 +69,7 @@ void extracting_freq_features(void)
 	}
 	printf("\n");
 
-	status = dsp_freq_phase(&transformed, &feature); /* real-part */
+	status = dsp_freq_phase(&transformed, &feature); /* phase-part */
 
 	printf("The phase-part (degrees) of the sample:\n");
 	for (i = 0; i < feature.length; i++)
