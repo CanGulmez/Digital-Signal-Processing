@@ -26,7 +26,7 @@ void time_to_freq_domain(void)
 
 	/* Creating a cosinus sample. */
 
-	status = dsp_signal_cos(10, 100, 1000, 0, 16, &sample);
+	status = dsp_signal_cos(10, 100, 1000, 0, 1024, &sample);
 	assert(status == DSP_SUCCESS);
 
 	printf("The cos() sample:\n");
@@ -38,11 +38,11 @@ void time_to_freq_domain(void)
 
 	/* Go to the frequency domain. */
 
-	status = dsp_transform_dft(&sample, &transformed);
+	status = dsp_transform_fft(&sample, &transformed);
 
 	/* Go back to the time domain. */
 
-	status = dsp_transform_idft(&transformed, &inversed);
+	status = dsp_transform_ifft(&transformed, &inversed);
 
 	printf("The built cos() sample:\n");
 	for (i = 0; i < inversed.length; i++)

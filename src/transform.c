@@ -154,7 +154,7 @@ DspStatus dsp_transform_fft(const DspTime *sample, DspFreq *res)
 	{
 		half = 1 << (s - 1);				/* half block size */
 		step = 1 << s;						/* full block size */
-		angle = -2.0 * M_PI / step;	/* twiddle factor step */
+		angle = -2.0 * M_PI / step;			/* twiddle factor step */
 
 		for (j = 0; j < n; j += step)
 		{
